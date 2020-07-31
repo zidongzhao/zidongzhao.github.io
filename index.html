@@ -81,41 +81,7 @@
 
 <ul>
   <li>
-    <p>(13 May 2020): lavaan version 0.6-6 has been released on
-<a href="https://cran.r-project.org/web/packages/lavaan/">CRAN</a>.
-See <a href="http://lavaan.ugent.be/history/dot6.html">Version History</a>
-for more information.</p>
-  </li>
-  <li>
-    <p>(12 Mayer 2020): new package
-<a href="https://cran.r-project.org/web/packages/covsim/index.html">covsim</a> is
-now available on CRAN. New technology to simulate multivariate non-normal
-and ordinal data.</p>
-  </li>
-  <li>
-    <p>(27 Sept 2019): the newest version of the
-<a href="https://cran.r-project.org/web/packages/bain/">bain</a> package now provides
-approximate Bayes factors for lavaan SEM models. See the psyarxiv
-paper <a href="https://psyarxiv.com/v3shc/">here</a>.</p>
-  </li>
-  <li>
-    <p>(28 Aug 2019): the slides and materials of the IMPS 2019 symposium ‘the
-lavaan ecosystem’ are available on an OSF page <a href="https://osf.io/bcy78/">here</a>.</p>
-  </li>
-  <li>
-    <p>(10 Jun 2018): the blavaan paper (on Bayesian SEM with a lavaan syntax) is
-<a href="https://www.jstatsoft.org/article/view/v085i04">published</a> in the
-Journal of Statistical Software.</p>
-  </li>
-  <li>
-    <p>(18 Dec 2017): a tutorial on ‘The Pairwise Likelihood Method for Structural
-Equation Modelling with ordinal variables and data with missing values using
-the R package lavaan’ prepared by Myrsini Katsikatsou has been added to the
-(new) <a href="http://lavaan.ugent.be/resources/tutorial.html">tutorial</a> page of the
-resources section.</p>
-  </li>
-  <li>
-    <p>(16 July 2017): a recording of my keynote presentation `Structural Equation Modeling: models, software and stories’ given at the <a href="https://user2017.brussels/">useR!2017 Conference</a> is available <a href="https://channel9.msdn.com/Events/useR-international-R-User-conferences/useR-International-R-User-2017-Conference/KEYNOTE-Structural-Equation-Modeling-models-software-and-stories">here</a>.</p>
+    <p>placeholder text</p>
   </li>
 </ul>
 
@@ -139,33 +105,6 @@ URL <a href="http://www.jstatsoft.org/v48/i02/">http://www.jstatsoft.org/v48/i02
 following example of a SEM model. The figure below contains
 a graphical representation of the model that we want to fit.</p>
 
-<div class="row clearfix">
-<div class="seven columns alpha">
-<p>
-<img src="/tutorial/figure/sem.png" alt="lavaan example" width="100%" />
-</p>
-</div>
-<div class="six columns omega">
-<div class="highlight"><pre><code class="r">model <span class="o">&lt;-</span> <span class="s">&#39;</span>
-<span class="s">   # latent variables</span>
-<span class="s">     ind60 =~ x1 + x2 + x3</span>
-<span class="s">     dem60 =~ y1 + y2 + y3 + y4</span>
-<span class="s">     dem65 =~ y5 + y6 + y7 + y8</span>
-<span class="s">   # regressions</span>
-<span class="s">     dem60 ~ ind60</span>
-<span class="s">     dem65 ~ ind60 + dem60</span>
-<span class="s">   # residual covariances</span>
-<span class="s">     y1 ~~ y5</span>
-<span class="s">     y2 ~~ y4 + y6</span>
-<span class="s">     y3 ~~ y7</span>
-<span class="s">     y4 ~~ y8</span>
-<span class="s">     y6 ~~ y8</span>
-<span class="s">&#39;</span>
-fit <span class="o">&lt;-</span> sem<span class="p">(</span>model<span class="p">,</span>data<span class="o">=</span>PoliticalDemocracy<span class="p">)</span>
-summary<span class="p">(</span>fit<span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
 
 
            <hr />
