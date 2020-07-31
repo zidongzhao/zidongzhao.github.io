@@ -198,3 +198,13 @@ blockquote p {
     font-style: normal;
     color: #444;
 }
+
+
+/* added by Zidong Zhao*/
+#name {
+  font-family: 'Georgia','TimesNewRoman',Times,sans-serif;
+}
+
+#cnname {
+  font-family: 'Hiragino Kaku Gothic Pro', 'WenQuanYi Zen Hei', '微軟正黑體', '蘋果儷中黑', Helvetica, Arial, sans-serif;
+}
