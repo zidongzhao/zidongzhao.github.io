@@ -211,4 +211,6 @@ blockquote p {
 
 #sectiontitle {
   font-family: 'Georgia','TimesNewRoman',Times,sans-serif;
-}
+}\
+
+.remove-top { margin-top: 0 !important; }
