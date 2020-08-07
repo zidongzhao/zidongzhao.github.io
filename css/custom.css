@@ -51,23 +51,6 @@ a:hover, a:focus {
     margin: 0 0 0 0;
 }
 
-#topnav li {
-    /* font-family: "Georgia","Times New Roman",serif; */
-    list-style: none;
-    display: inline;
-    margin: 0 15px 0 0;
-}
-
-#topnav a {
-    color: #555;
-    text-decoration: none;
-}
-
-#topnav a:hover {
-    color: #222;
-}
-
-
 /* list style for sidemenu */
 #nav ul {
     margin-left: 0px;
@@ -211,6 +194,8 @@ blockquote p {
 
 #sectiontitle {
   font-family: 'Georgia','TimesNewRoman',Times,sans-serif;
-}\
+}
+
+#collablist li {list-style: none;}
 
 .remove-top { margin-top: 0 !important; }
