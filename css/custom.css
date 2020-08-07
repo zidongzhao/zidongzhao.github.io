@@ -196,6 +196,6 @@ blockquote p {
   font-family: 'Georgia','TimesNewRoman',Times,sans-serif;
 }
 
-#collablist li {list-style: none;}
+#collablist li {list-style: none; margin-left: 0px;}
 
 .remove-top { margin-top: 0 !important; }
