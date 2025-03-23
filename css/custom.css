@@ -451,7 +451,7 @@ blockquote p {
     right: -100%;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 247, 252, 0.95);  /* Slightly transparent background */
+    background-color: rgba(255, 247, 252, 0.95);
     z-index: 999;
     transition: right 0.3s ease;
     padding: 80px 20px 40px;
@@ -468,21 +468,25 @@ blockquote p {
     margin: 0;
     text-align: right;
     margin-top: 20px;
+    width: fit-content;
+    margin-left: auto;
 }
 
 .mobile-nav li {
     margin: 8px 0;
     list-style: none;
+    width: fit-content;
+    margin-left: auto;
 }
 
 .mobile-nav a {
     font-size: 1.4em;
     color: #489352;
     text-decoration: none;
-    display: inline-block;  /* Changed from block to inline-block */
-    padding: 8px;
-    margin: 0 20px;
+    display: inline-block;
+    padding: 8px 20px;
     text-align: right;
+    width: fit-content;
 }
 
 .mobile-nav a:hover {
@@ -500,15 +504,16 @@ blockquote p {
     padding: 0;
     list-style: none;
     text-align: right;
-    width: fit-content;
+    width: fit-content !important;
     margin-left: auto;
     margin-right: 20px;
 }
 
 .mobile-nav .social-icons li {
     margin: 0;
-    width: 100%;
+    width: fit-content !important;
     text-align: right;
+    margin-left: auto;
 }
 
 .mobile-nav .social-icons a {
@@ -516,6 +521,7 @@ blockquote p {
     padding: 0;
     margin: 0;
     text-align: right;
+    width: fit-content;
 }
 
 .mobile-nav .social-icons img {
