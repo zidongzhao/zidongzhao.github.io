@@ -5,6 +5,11 @@ img {
     image-orientation: from-image;
 }
 
+/* Set background color for all devices */
+body {
+    background-color: #f5f9f6;  /* Light pastel green background */
+}
+
 /* Green side bands - base size for mobile */
 body::before,
 body::after {
@@ -446,7 +451,7 @@ blockquote p {
     right: -100%;
     width: 100%;
     height: 100%;
-    background-color: #fff7fc;
+    background-color: rgba(255, 247, 252, 0.95);  /* Slightly transparent background */
     z-index: 999;
     transition: right 0.3s ease;
     padding: 80px 20px 40px;
@@ -474,15 +479,15 @@ blockquote p {
     font-size: 1.4em;
     color: #489352;
     text-decoration: none;
-    display: block;
+    display: inline-block;  /* Changed from block to inline-block */
     padding: 8px;
     margin: 0 20px;
     text-align: right;
 }
 
 .mobile-nav a:hover {
-    color: #489352;  /* Keep the same color on hover */
-    opacity: 1;  /* Keep full opacity on hover */
+    color: #489352;
+    opacity: 1;
 }
 
 /* Mobile Navigation Social Icons */
