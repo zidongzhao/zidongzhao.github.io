@@ -400,7 +400,7 @@ blockquote p {
     }
 }
 
-/* Mobile Navigation */
+/* Mobile Navigation Toggle */
 .mobile-nav-toggle {
     display: none;
     position: fixed;
@@ -438,21 +438,23 @@ blockquote p {
     margin: 4px auto;
 }
 
+/* Mobile Navigation */
 .mobile-nav {
     display: none;
     position: fixed;
     top: 0;
-    left: 0;
+    right: -100%;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 247, 252, 0.98);
+    background-color: #fff7fc;
     z-index: 999;
+    transition: right 0.3s ease;
     padding: 80px 20px 40px;
     overflow-y: auto;
 }
 
 .mobile-nav.active {
-    display: block;
+    right: 0;
 }
 
 .mobile-nav ul {
@@ -527,6 +529,10 @@ blockquote p {
     /* Show mobile navigation elements */
     .mobile-nav-toggle {
         display: flex;
+    }
+
+    .mobile-nav {
+        display: block;
     }
 
     /* Adjust header for mobile */
