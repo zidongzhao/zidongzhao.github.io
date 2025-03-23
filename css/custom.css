@@ -36,14 +36,6 @@ body::after {
     right: 0;
 }
 
-/* Explicitly ensure no green bands on mobile */
-@media (max-width: 767px) {
-    body::before,
-    body::after {
-        width: 0 !important;
-    }
-}
-
 /* Responsive green bands */
 @media (min-width: 1200px) {
     body::before,
