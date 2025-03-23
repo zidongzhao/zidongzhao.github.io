@@ -24,7 +24,7 @@
 
 	<!-- Mobile Specific Metas
   ================================================== -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta name="google-site-verification" content="Zrqep0gYKcbXKq_xTQJZImOrJJE8KZMRLRYbLZGsUow" />
 
 	<!-- CSS
@@ -50,6 +50,31 @@
 
 </head>
 <body style="background-color:#fff7fc;">
+
+	<!-- Mobile Navigation Toggle -->
+	<button class="mobile-nav-toggle" aria-label="Toggle navigation">
+		<span></span>
+		<span></span>
+		<span></span>
+	</button>
+
+	<!-- Mobile Navigation -->
+	<nav class="mobile-nav">
+		<ul>
+			<li><a href="/index.html">About</a></li>
+			<li><a href="/research.html">Research</a></li>
+			<li><a href="/publications.html">Publications</a></li>
+			<li><a href="/cv.html">CV</a></li>
+			<li><a href="/collaborators.html">Collaborators</a></li>
+			<li><a href="/contact.html">Contact</a></li>
+			<li class="social-icons">
+				<a href='https://www.linkedin.com/in/zidong-zhao-10076559/' target='_blank' aria-label="LinkedIn"><img src="/images/smicon_linkedin.png" alt="linkedin icon" /></a>
+				<a href='https://scholar.google.com/citations?user=AtnndQsAAAAJ&hl=en' target='_blank' aria-label="Google Scholar"><img src="/images/smicon_gscholar.png" alt="google scholar icon" /></a>
+				<a href='https://github.com/zidongzhao/' target='_blank' aria-label="GitHub"><img src="/images/smicon_github.png" alt="github icon" /></a>
+				<a href='https://www.instagram.com/alphz/' target='_blank' aria-label="Instagram"><img src="/images/smicon_instagram.png" alt="instagram icon" /></a>
+			</li>
+		</ul>
+	</nav>
 
 	<!-- Primary Page Layout
 	================================================== -->
@@ -79,10 +104,10 @@
 					<li><a href="/collaborators.html">Collaborators</a></li>
 					<li><a href="/contact.html">Contact</a></li>
 					<li class="social-icons">
-						<a href='https://www.linkedin.com/in/zidong-zhao-10076559/' target='_blank'><img src="/images/smicon_linkedin.png" alt="linkedin icon" /></a>
-						<a href='https://scholar.google.com/citations?user=AtnndQsAAAAJ&hl=en' target='_blank'><img src="/images/smicon_gscholar.png" alt="google scholar icon" /></a>
-						<a href='https://github.com/zidongzhao/' target='_blank'><img src="/images/smicon_github.png" alt="github icon" /></a>
-						<a href='https://www.instagram.com/alphz/' target='_blank'><img src="/images/smicon_instagram.png" alt="instagram icon" /></a>
+						<a href='https://www.linkedin.com/in/zidong-zhao-10076559/' target='_blank' aria-label="LinkedIn"><img src="/images/smicon_linkedin.png" alt="linkedin icon" /></a>
+						<a href='https://scholar.google.com/citations?user=AtnndQsAAAAJ&hl=en' target='_blank' aria-label="Google Scholar"><img src="/images/smicon_gscholar.png" alt="google scholar icon" /></a>
+						<a href='https://github.com/zidongzhao/' target='_blank' aria-label="GitHub"><img src="/images/smicon_github.png" alt="github icon" /></a>
+						<a href='https://www.instagram.com/alphz/' target='_blank' aria-label="Instagram"><img src="/images/smicon_instagram.png" alt="instagram icon" /></a>
 					</li>
 				</ul>
 			</div>
@@ -90,13 +115,14 @@
 			<div class="four columns">
 				<hr style='border-width:0' />
 				<h4 id="sectiontitle">About me</h4>
-				<p><img src="/images/selfworthkelly.jpg" alt="nyc2018" class="profile-image"/></p>
+				<p><img src="/images/selfworthkelly.jpg" alt="Profile picture of Zidong Zhao" class="profile-image"/></p>
 			</div>
 
 			<div class="six columns">
 				<hr style='border-width:0' />
 				<h4>&nbsp;</h4>
-				I am a Research Scientist at Yale University's <a href="https://www.drlauriesantos.com/science-well-being" target='_blank'>Science of Well-being</a> initiative, where I collaborate with <a href="https://www.drlauriesantos.com/" target='_blank'>Laurie Santos</a> and an interdisciplinary team to enhance human flourishing through large scale online courses and data-driven approaches. In my work, I leverage advanced statistical modeling, machine learning, surveys, and experimentation to transform complex behavioral data from millions of users into actionable insights for product design, teaching practices, and cross-functional decision making. <br><br>Previously, I completed my doctoral training in the <a href="http://psnlab.princeton.edu/" target='_blank'>Princeton Social Neuroscience Lab</a>, where I worked primarily with <a href="https://psych.princeton.edu/person/diana-tamir" target='_blank'>Diana Tamir</a> and <a href="https://psych.princeton.edu/person/tom-griffiths" target='_blank'>Tom Griffiths</a>, and learnt enormously from fabulous mentors and <a href="/collaborators.html">collaborators</a>. I earned my BA from Vanderbilt University, where I did clinical psychology research with <a href="https://www.vanderbilt.edu/psychological_sciences/bio/bunmi-olatunji" target='_blank'>Bunmi Olatunji</a> and <a href="https://www.vanderbilt.edu/psychological_sciences/bio/sohee-park" target='_blank'>Sohee Park</a>. You can learn more about my academic work through my <a href="/research.html">research</a> and <a href="/publications.html"></a>publications.</a></p>
+				<p>I am a Research Scientist at Yale University's <a href="https://www.drlauriesantos.com/science-well-being" target='_blank'>Science of Well-being</a> initiative, where I collaborate with <a href="https://www.drlauriesantos.com/" target='_blank'>Laurie Santos</a> and an interdisciplinary team to enhance human flourishing through large scale online courses and data-driven approaches. In my work, I leverage advanced statistical modeling, machine learning, surveys, and experimentation to transform complex behavioral data from millions of users into actionable insights for product design, teaching practices, and cross-functional decision making.</p>
+				<p>Previously, I completed my doctoral training in the <a href="http://psnlab.princeton.edu/" target='_blank'>Princeton Social Neuroscience Lab</a>, where I worked primarily with <a href="https://psych.princeton.edu/person/diana-tamir" target='_blank'>Diana Tamir</a> and <a href="https://psych.princeton.edu/person/tom-griffiths" target='_blank'>Tom Griffiths</a>, and learnt enormously from fabulous mentors and <a href="/collaborators.html">collaborators</a>. I earned my BA from Vanderbilt University, where I did clinical psychology research with <a href="https://www.vanderbilt.edu/psychological_sciences/bio/bunmi-olatunji" target='_blank'>Bunmi Olatunji</a> and <a href="https://www.vanderbilt.edu/psychological_sciences/bio/sohee-park" target='_blank'>Sohee Park</a>. You can learn more about my academic work through my <a href="/research.html">research</a> and <a href="/publications.html">publications</a>.</p>
 			</div>
 
 			<div id='twitterfeed' class='three columns'>
@@ -109,5 +135,41 @@
 
 	<!-- End Document
 	================================================== -->
+
+	<!-- Mobile Navigation JavaScript -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+			const mobileNav = document.querySelector('.mobile-nav');
+			const body = document.body;
+
+			mobileNavToggle.addEventListener('click', function() {
+				mobileNav.classList.toggle('active');
+				body.classList.toggle('nav-open');
+				this.setAttribute('aria-expanded', 
+					this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'
+				);
+			});
+
+			// Close mobile nav when clicking a link
+			const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
+			mobileNavLinks.forEach(link => {
+				link.addEventListener('click', function() {
+					mobileNav.classList.remove('active');
+					body.classList.remove('nav-open');
+					mobileNavToggle.setAttribute('aria-expanded', 'false');
+				});
+			});
+
+			// Close mobile nav when clicking outside
+			mobileNav.addEventListener('click', function(e) {
+				if (e.target === mobileNav) {
+					mobileNav.classList.remove('active');
+					body.classList.remove('nav-open');
+					mobileNavToggle.setAttribute('aria-expanded', 'false');
+				}
+			});
+		});
+	</script>
 </body>
 </html>

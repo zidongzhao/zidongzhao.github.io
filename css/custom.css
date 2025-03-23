@@ -32,21 +32,21 @@ body::after {
 }
 
 /* Responsive green bands */
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
     body::before,
     body::after {
         width: 75px;
     }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1600px) {
     body::before,
     body::after {
         width: 120px;
     }
 }
 
-@media (min-width: 1920px) {
+@media (min-width: 2000px) {
     body::before,
     body::after {
         width: 180px;
@@ -132,6 +132,21 @@ body::after {
     
     #header .three.columns {
         margin-bottom: 0;
+    }
+
+    /* Ensure nav stays vertical until mobile breakpoint */
+    #nav {
+        display: block !important;
+    }
+
+    #nav ul {
+        display: block !important;
+        flex-wrap: unset !important;
+    }
+
+    #nav li {
+        display: block !important;
+        width: 100% !important;
     }
 }
 
@@ -383,4 +398,256 @@ blockquote p {
     p {
         text-align: justify;
     }
+}
+
+/* Mobile Navigation */
+.mobile-nav-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.mobile-nav-toggle:focus,
+.mobile-nav-toggle:active,
+.mobile-nav-toggle:hover,
+.mobile-nav-toggle:visited {
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.mobile-nav-toggle span {
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: #489352;
+    border-radius: 50%;
+    margin: 4px auto;
+}
+
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 247, 252, 0.98);
+    z-index: 999;
+    padding: 80px 20px 40px;
+    overflow-y: auto;
+}
+
+.mobile-nav.active {
+    display: block;
+}
+
+.mobile-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+    margin-top: 20px;
+}
+
+.mobile-nav li {
+    margin: 8px 0;
+    list-style: none;
+}
+
+.mobile-nav a {
+    font-size: 1.4em;
+    color: #489352;
+    text-decoration: none;
+    display: block;
+    padding: 8px;
+    margin: 0 20px;
+    text-align: right;
+}
+
+.mobile-nav a:hover {
+    color: #489352;  /* Keep the same color on hover */
+    opacity: 1;  /* Keep full opacity on hover */
+}
+
+/* Mobile Navigation Social Icons */
+.mobile-nav .social-icons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+    text-align: right;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.mobile-nav .social-icons li {
+    margin: 0;
+    width: 100%;
+    text-align: right;
+}
+
+.mobile-nav .social-icons a {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+}
+
+.mobile-nav .social-icons img {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+}
+
+/* Mobile-first responsive styles */
+@media (max-width: 767px) {
+    /* Hide desktop navigation on mobile */
+    #nav {
+        display: none;
+    }
+
+    /* Show mobile navigation elements */
+    .mobile-nav-toggle {
+        display: flex;
+    }
+
+    /* Adjust header for mobile */
+    #header {
+        padding-right: 70px;
+        margin-top: 20px;
+        margin-bottom: 0;
+    }
+
+    #header .three.columns {
+        margin-bottom: 0;
+    }
+
+    /* Keep desktop font sizes for name on mobile */
+    #name {
+        font-size: 2.4em;
+        line-height: 1.2;
+        margin-bottom: 0;
+        text-align: left !important;
+    }
+
+    #cnname {
+        font-size: 1.8em;
+        line-height: 1.2;
+        margin-top: 5px;
+        margin-bottom: 0;
+        text-align: left !important;
+    }
+
+    /* Adjust main content for mobile */
+    .four.columns, .six.columns, .three.columns {
+        width: 100%;
+        margin-left: 0;
+        padding: 0;
+    }
+
+    /* Remove all spacing between sections */
+    hr {
+        display: none;
+    }
+
+    /* Adjust About me section spacing */
+    #sectiontitle {
+        margin: 0;
+        padding: 0;
+        font-size: 1.4em;
+        text-align: left !important;
+    }
+
+    /* Adjust profile image spacing */
+    .profile-image {
+        max-width: 250px;
+        margin: 10px 0;
+        display: block;
+    }
+
+    /* Adjust paragraph spacing */
+    p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    /* Left align headings */
+    h4 {
+        text-align: left !important;
+    }
+
+    /* Prevent body scroll when mobile nav is open */
+    body.nav-open {
+        overflow: hidden;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    /* Remove flex display for nav in tablet view */
+    #nav ul {
+        display: block !important;
+    }
+
+    .social-icons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .profile-image {
+        max-width: 250px;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+    /* Hide mobile navigation on desktop */
+    .mobile-nav-toggle,
+    .mobile-nav {
+        display: none !important;
+    }
+
+    /* Show desktop navigation */
+    #nav {
+        display: block;
+    }
+}
+
+/* Override general link hover styles for mobile navigation */
+.mobile-nav a,
+.mobile-nav a:visited,
+.mobile-nav a:hover,
+.mobile-nav a:focus {
+    color: #489352;
+    text-decoration: none;
+}
+
+.mobile-nav-toggle,
+.mobile-nav-toggle:hover,
+.mobile-nav-toggle:focus {
+    background: transparent !important;
+    outline: none !important;
 }

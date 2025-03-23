@@ -50,6 +50,31 @@
 </head>
 <body style="background-color:#fff7fc;">
 
+	<!-- Mobile Navigation Toggle -->
+	<button class="mobile-nav-toggle" aria-label="Toggle navigation">
+		<span></span>
+		<span></span>
+		<span></span>
+	</button>
+
+	<!-- Mobile Navigation -->
+	<nav class="mobile-nav">
+		<ul>
+			<li><a href="/index.html">About</a></li>
+			<li><a href="/research.html">Research</a></li>
+			<li><a href="/publications.html">Publications</a></li>
+			<li><a href="/cv.html">CV</a></li>
+			<li><a href="/collaborators.html">Collaborators</a></li>
+			<li><a href="/contact.html">Contact</a></li>
+			<li class="social-icons">
+				<a href='https://www.linkedin.com/in/zidong-zhao-10076559/' target='_blank' aria-label="LinkedIn"><img src="/images/smicon_linkedin.png" alt="linkedin icon" /></a>
+				<a href='https://scholar.google.com/citations?user=AtnndQsAAAAJ&hl=en' target='_blank' aria-label="Google Scholar"><img src="/images/smicon_gscholar.png" alt="google scholar icon" /></a>
+				<a href='https://github.com/zidongzhao/' target='_blank' aria-label="GitHub"><img src="/images/smicon_github.png" alt="github icon" /></a>
+				<a href='https://www.instagram.com/alphz/' target='_blank' aria-label="Instagram"><img src="/images/smicon_instagram.png" alt="instagram icon" /></a>
+			</li>
+		</ul>
+	</nav>
+
 	<!-- Primary Page Layout
 	================================================== -->
 	<div id="header" class="container">
@@ -117,5 +142,39 @@
 
 	<!-- End Document
 	================================================== -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+			const mobileNav = document.querySelector('.mobile-nav');
+			const body = document.body;
+
+			mobileNavToggle.addEventListener('click', function() {
+				mobileNav.classList.toggle('active');
+				body.classList.toggle('nav-open');
+				this.setAttribute('aria-expanded', 
+					this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'
+				);
+			});
+
+			// Close mobile nav when clicking a link
+			const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
+			mobileNavLinks.forEach(link => {
+				link.addEventListener('click', function() {
+					mobileNav.classList.remove('active');
+					body.classList.remove('nav-open');
+					mobileNavToggle.setAttribute('aria-expanded', 'false');
+				});
+			});
+
+			// Close mobile nav when clicking outside
+			mobileNav.addEventListener('click', function(e) {
+				if (e.target === mobileNav) {
+					mobileNav.classList.remove('active');
+					body.classList.remove('nav-open');
+					mobileNavToggle.setAttribute('aria-expanded', 'false');
+				}
+			});
+		});
+	</script>
 </body>
 </html>
