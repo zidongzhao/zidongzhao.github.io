@@ -6,8 +6,13 @@ img {
 }
 
 /* Set background color for all devices */
-body {
+html {
     background-color: #f5f9f6;  /* Light pastel green background */
+}
+
+body {
+    background-color: #f5f9f6 !important;  /* Light pastel green background */
+    min-height: 100vh;
 }
 
 /* Green side bands - base size for mobile */
@@ -466,17 +471,16 @@ blockquote p {
     list-style: none;
     padding: 0;
     margin: 0;
-    text-align: right;
     margin-top: 20px;
-    width: fit-content;
-    margin-left: auto;
+    position: relative;
 }
 
 .mobile-nav li {
     margin: 8px 0;
     list-style: none;
-    width: fit-content;
-    margin-left: auto;
+    position: relative;
+    text-align: right;
+    height: 44px; /* Fixed height for regular menu items */
 }
 
 .mobile-nav a {
@@ -485,8 +489,11 @@ blockquote p {
     text-decoration: none;
     display: inline-block;
     padding: 8px 20px;
-    text-align: right;
-    width: fit-content;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
 }
 
 .mobile-nav a:hover {
@@ -503,25 +510,24 @@ blockquote p {
     margin-top: 20px;
     padding: 0;
     list-style: none;
-    text-align: right;
-    width: fit-content !important;
+    width: 120px; /* Fixed width for the grid */
     margin-left: auto;
     margin-right: 20px;
 }
 
 .mobile-nav .social-icons li {
     margin: 0;
-    width: fit-content !important;
+    height: auto;
     text-align: right;
-    margin-left: auto;
 }
 
 .mobile-nav .social-icons a {
-    display: inline-block;
+    position: static;
+    transform: none;
     padding: 0;
     margin: 0;
-    text-align: right;
-    width: fit-content;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .mobile-nav .social-icons img {
