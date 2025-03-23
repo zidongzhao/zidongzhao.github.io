@@ -16,6 +16,7 @@ body::after {
     background-color: #d4e9d8;  /* 20% more pastel green */
     z-index: -1;
     transition: background-color 0.2s ease, width 0.3s ease;
+    display: none; /* Hide on mobile by default */
 }
 
 body::before:hover,
@@ -36,6 +37,7 @@ body::after {
     body::before,
     body::after {
         width: 75px;
+        display: block; /* Show only on desktop */
     }
 }
 
@@ -50,6 +52,13 @@ body::after {
     body::before,
     body::after {
         width: 180px;
+    }
+}
+
+/* Mobile-specific background */
+@media (max-width: 1199px) {
+    body {
+        background-color: #fff7fc !important; /* Force pink background on mobile */
     }
 }
 
