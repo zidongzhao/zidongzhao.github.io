@@ -298,6 +298,50 @@ def test_interactions():
     check("script loaded with defer", re.search(r'<script src="js/site.js" defer>', index()) is not None)
 
 
+REDIRECTS = {
+    "cv.html": "resume", "publications.html": "projects", "research.html": "academics",
+    "collaborators.html": "academics", "contact.html": "contact",
+    **{f"publications/{n}.html": "projects" for n in [
+        "ZhaoSenedTamir2023", "ZhaoThorntonTamir2020", "ZhaoMildnerTamir2020", "MeyerZhaoTamir2019",
+        "OlatunjiBergZhao2017", "sans2019", "spsp2018", "spsp2019"]},
+}
+
+
+def test_redirects():
+    for path, sid in REDIRECTS.items():
+        f = ROOT / path
+        html = f.read_text() if f.exists() else ""
+        url = f"/#{sid}"
+        ok = (f'<meta http-equiv="refresh" content="0; url={url}">' in html
+              and f'<link rel="canonical" href="https://zidongzhao.github.io{url}">' in html
+              and '<meta name="robots" content="noindex">' in html
+              and f'<a href="{url}">' in html)
+        check(f"redirect {path} -> {url}", ok)
+    sm = read("sitemap.xml") if (ROOT / "sitemap.xml").exists() else ""
+    check("sitemap lists only the home page", re.findall(r"<loc>(.*?)</loc>", sm) == ["https://zidongzhao.github.io/"])
+
+
+def test_links():
+    broken, into_archive = [], []
+    for p in served_files():
+        if p.suffix != ".html":
+            continue
+        for n, a in tags(p.read_text(errors="replace")):
+            ref = a.get("href") or a.get("src") or ""
+            if not ref or re.match(r"^(https?:|#|data:)", ref):
+                continue
+            path = ref.split("#")[0].split("?")[0]
+            if not path:
+                continue
+            target = ROOT / path.lstrip("/") if path.startswith("/") else p.parent / path
+            if path.lstrip("/").startswith("old-site") or "old-site" in target.resolve().parts:
+                into_archive.append(f"{p.relative_to(ROOT)} -> {ref}")
+            elif not target.exists():
+                broken.append(f"{p.relative_to(ROOT)} -> {ref}")
+    check("no broken local links", not broken, "; ".join(broken[:5]))
+    check("nothing links into old-site/", not into_archive, "; ".join(into_archive[:5]))
+
+
 def main() -> None:
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):
