@@ -133,6 +133,7 @@ section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
   .site-nav a[aria-current="true"] { border-left-color: var(--accent); }
 }
 .nav-toggle {
+  display: none;
   margin-top: 1rem; font: 500 .9375rem/1 var(--sans); color: var(--ink);
   background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: .6rem .9rem; cursor: pointer;
 }
@@ -174,4 +175,41 @@ section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
 .card {
   background: var(--card); border: 1px solid var(--card-border); border-left: 3px solid var(--pink-edge);
   border-radius: 10px; padding: 1.1rem 1.25rem; margin-bottom: 1rem;
+}
+
+/* Phone menu: collapsed only when JS is running, so it stays usable without JS */
+@media (max-width: 899px) {
+  .js .nav-toggle { display: inline-block; }
+  .js #site-nav:not(.open) { display: none; }
+}
+
+/* Text links: pink highlight sweeps across */
+.prose a:not(.btn) {
+  color: var(--accent); font-weight: 500;
+  text-decoration: underline; text-decoration-color: var(--pink-edge); text-underline-offset: 3px;
+  background: linear-gradient(var(--pink-soft), var(--pink-soft)) left / 0% 100% no-repeat;
+  border-radius: 3px; padding: 0 .1em; margin: 0 -.1em;
+  transition: background-size .35s ease;
+}
+.prose a:not(.btn):hover, .prose a:not(.btn):focus-visible { background-size: 100% 100%; }
+
+/* Social icons: playful tilt and grow */
+.social { display: flex; gap: .75rem; }
+.social a {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  color: var(--accent); background: var(--card); border: 1.5px solid var(--pink-edge);
+  transition: transform .25s ease, background-color .25s ease;
+}
+.social a:hover, .social a:focus-visible { transform: rotate(-10deg) scale(1.12); background: var(--pink-soft); }
+
+/* Experience cards tilt toward the cursor (js/site.js sets the transform) */
+#experience .card { transition: transform .2s ease-out; will-change: transform; }
+
+/* Keyboard focus */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.btn:hover:not([disabled]) { filter: brightness(1.08); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .card, .social a, .prose a { transition: none; transform: none !important; }
 }

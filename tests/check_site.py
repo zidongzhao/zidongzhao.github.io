@@ -274,6 +274,30 @@ def test_resume():
         check("resume PDF has no phone number", PHONE_RE.search(text) is None)
 
 
+def test_interactions():
+    c = css()
+    rm = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", c, re.S)
+    block = rm.group(1) if rm else ""
+    check("reduced-motion block", bool(rm))
+    for sel in [".card", ".social a", ".prose a"]:
+        check(f"reduced motion covers {sel}", sel in block)
+    check("reduced motion disables transition and transform", "transition: none" in block and "transform: none" in block)
+    check(":focus-visible styles", ":focus-visible" in c)
+    hide = re.findall(r"([^{}]*#site-nav[^{}]*)\{[^}]*display:\s*none", c)
+    check("mobile menu only collapses with JS", bool(hide) and all(".js" in s for s in hide), str(hide))
+    links = re.findall(r"<a ([^>]*)>\s*(<svg[^>]*>)", re.search(r'<div class="social">(.*?)</div>', index(), re.S).group(1)
+                       if '<div class="social">' in index() else "")
+    check("three social icon links", len(links) == 3, str(len(links)))
+    check("social links labelled, icons hidden", all("aria-label=" in a and 'aria-hidden="true"' in s for a, s in links))
+    js = read("js/site.js") if (ROOT / "js/site.js").exists() else ""
+    check("js adds .js class", "classList.add('js')" in js or 'classList.add("js")' in js)
+    check("tilt gated on fine pointer", "(pointer: fine)" in js)
+    check("tilt gated on reduced motion", "prefers-reduced-motion" in js)
+    check("menu toggles aria-expanded", "aria-expanded" in js)
+    check("active nav uses aria-current", "aria-current" in js and "IntersectionObserver" in js)
+    check("script loaded with defer", re.search(r'<script src="js/site.js" defer>', index()) is not None)
+
+
 def main() -> None:
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):
