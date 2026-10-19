@@ -1,0 +1,8 @@
+# GitHub Pages runs Jekyll on this repo; it is kept only to stop project docs from being served.
+exclude:
+  - SPEC.md
+  - SOURCES.md
+  - CLAUDE.md
+  - README.md
+  - docs
+  - tests

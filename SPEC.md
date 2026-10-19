@@ -1,0 +1,124 @@
+# zidongzhao.github.io revamp
+
+## Problem and user
+
+Zidong is a senior quantitative UX researcher looking for their next role. The current site (zidongzhao.github.io) still presents them as a Yale research scientist with a fully academic framing, an empty CV page, and leftover placeholders. Visitors are hiring managers and recruiters, as well as peers in the research, insights, and product fields, usually arriving from LinkedIn, a resume, or a name search.
+
+After ten seconds they should know: a senior quant UXR. Positioning line (Zidong's wording, use verbatim): "Bridging human behavior and complex technical systems, turning experience into measurable signals and product decisions." Proof points, named concretely: Instagram Reels ranking, an LLM-based content classifier, AI-native research workflows adopted by a team of 12, 1.5M+ users at Yale, PhD-level modeling and experimentation. Recommendation systems appear as past work and evidence, never as the brand.
+
+## Goals, non-goals, anti-goals
+
+- **Goal:** one simple, credible page that complements LinkedIn: a narrative of the career path, the work, a portfolio link, the resume, and the academic background.
+- **Non-goals:** blog, CMS, contact form, analytics dashboards, per-project pages, password protection on this site.
+- **Anti-goals:** reading as an academic site; copying LinkedIn bullet for bullet; showing anything confidential from Instagram beyond what the resume already states; publishing the phone number or a scrapeable email; animations that feel gimmicky or block reading.
+
+## Core flow
+
+Visitor lands, reads the About, scans Experience, then either opens the portfolio, reads or downloads the resume, or try to get in touch via the multiple contact channels.
+
+## Page structure (single scrolling page, in this order)
+
+1. **About.** Opens with the positioning line, then a short narrative built from the LinkedIn About (see Sources). The thread: each role connects human behavior to a technical system. Princeton: computational models of how people predict each other. Yale and HelloNova: behavioral and survey data turned into product decisions. Instagram: user insight turned into priorities for a ranking system.
+2. **Experience.** Cards, newest first: Instagram (Senior Quant UXR, Reels Relevance, Aug 2025 to Sep 2026), HelloNova (Advisor, Aug 2024 to Feb 2026), Yale Science of Well-Being (Research Scientist, Aug 2021 to Aug 2025), Princeton (PhD researcher and graduate instructor, 2016 to 2021). Two or three lines each, drawn from resume and LinkedIn, phrased to complement rather than repeat LinkedIn.
+3. **Projects.** (a) UX research portfolio card: the portfolio is hosted elsewhere; the button reads "Coming soon" and is not a live link until Zidong supplies the URL. (b) Academic publications: the 5 papers from the current site, each with PDF and DOI links (DOIs and PDFs below).
+4. **Resume.** One summary line, a "Download resume" button, and the PDF embedded inline (as the current `cv.html` does with `<embed>`). On narrow screens the download button sits above the embed, since mobile browsers often render only the first page.
+5. **Academics.** One short paragraph each on the Princeton and Vanderbilt work, condensed from the current `research.html` and homepage. Collaborators as one line of linked names (links from `collaborators.html`). Mentors named on the old homepage (Diana Tamir, Tom Griffiths, Laurie Santos, Bunmi Olatunji, Sohee Park) keep their links. No posters. Start the section with something like "In a previous life, I did experimental, computational, and neuroimaging work in psychology in academia" 
+6. **Contact.** Email shown as plain text "zhaozidong1993 at gmail dot com", with no `mailto:` link and no address in the HTML source in usable form. Social icons: LinkedIn, GitHub, Google Scholar.
+
+**Sidebar (desktop):** pinned left. Name in serif ("Zidong Zhao"), 赵紫东, "Quantitative UX Researcher", one-line tagline ("Making human experience measurable." is the working version; the full positioning line is too long for the sidebar), section links, social icons. **Phone width:** the sidebar becomes a top header with a compact menu; no horizontal scroll.
+
+## Visual system (decided in mockups)
+
+Light mode:
+- Page background: light sage `#eef6f0`
+- Highlights (title, section labels, links): forest green `#3d7a48`
+- Decorations (sidebar divider, card edges, active nav item, link hover sweep): pink, `#f9d9e8` divider, `#f6d3e3` card border, `#f2b8d2` card left edge, `#fbe3ef` soft fill
+- Cards: `#fffafd`; ink `#1f2a22`; muted `#5a675e`
+- Fonts: see Type below
+
+Dark mode, following the visitor's system setting:
+- Background deep pine `#16201a`; cards `#1e2a23` with `#33463a` border
+- Highlights soft mint `#8fd19e`; decorations dusty rose `#d98fb0`, soft fill `#4a2e3c`, divider `#5a3a4a`
+- Ink `#eef6f0`; body `#c9d6cc`; muted `#7d8c82`
+
+Contrast for body text and links must meet WCAG AA in both modes; adjust shades (not hues) if a pair fails.
+
+### Type (decided in mockups)
+
+Fonts, all from Google Fonts with `display=swap`:
+- **Serif: Newsreader**, weight 500, plus 400 italic. Used only for the name and the About positioning line (italic 400 also for journal names in Publications).
+- **Sans: IBM Plex Sans**, weights 400, 500, 600. Everything else: sidebar text, section labels, body, cards, buttons.
+- **Chinese name: Noto Serif SC**, weight 400, loaded with `&text=赵紫东` so only those three glyphs download.
+- Fallbacks: `Newsreader, Georgia, serif` and `"IBM Plex Sans", system-ui, -apple-system, sans-serif`. Apply `font-size-adjust` on the sans stack so a fallback font keeps the same lowercase height and the layout doesn't shift while fonts load.
+
+Scale (rem at a 16px root; desktop / phone):
+
+| Role | Font | Size | Weight | Line height |
+|---|---|---|---|---|
+| Name (sidebar or phone header) | Newsreader | 2.5 / 2 | 500 | 1.05 |
+| 赵紫东 | Noto Serif SC | 1.0 / 0.95 | 400 | 1.3 |
+| Positioning line (About opener) | Newsreader | 1.5 / 1.25 | 500 | 1.35 |
+| Role title in sidebar | Plex | 0.95 | 600 | 1.4 |
+| Sidebar tagline, nav links | Plex | 0.95 | 400 / 500 | 1.5 |
+| Section label (ABOUT, EXPERIENCE...) | Plex, uppercase, 0.1em tracking | 0.75 | 600 | 1.2 |
+| Body text | Plex | 1.0625 / 1.0 | 400 | 1.65 |
+| Card title (role and org) | Plex | 1.0625 | 600 | 1.4 |
+| Meta (dates, places) | Plex | 0.875 | 400 | 1.4 |
+| Buttons | Plex | 0.9375 | 500 | 1 |
+
+Body text lines stay under about 70 characters. Name and positioning line are the only serif text; that restraint is the point.
+
+## Interactions (decided)
+
+- Text links: pink highlight sweeps across on hover.
+- Social icons: playful tilt and grow on hover.
+- Experience cards: tilt toward the cursor.
+- All of the above also respond to keyboard focus where it makes sense, and are off under `prefers-reduced-motion`. Card tilt is off on touch devices.
+
+## Stack and deploy (decided)
+
+- Plain HTML, CSS, and a small vanilla JS file. No framework, no build step, no package manager.
+- Hosted on GitHub Pages from the existing repo `github.com/zidongzhao/zidongzhao.github.io`, so the URL and git history are kept.
+- The entire current site (every file and folder, structure unchanged) is moved into `old-site/` in that repo as a reference copy. It stays publicly reachable; mark its pages `noindex` and disallow it in `robots.txt`. Its root-relative links will not work from the subfolder; that is accepted. Old PDFs that contain contact details (`files/CV_Zidong Zhao_041621.pdf`, `Resume_Zidong Zhao_ds1p.pdf`, and the copy under `backup_20250322_112858/`) stay in the archive unchanged; Zidong accepted this on the condition that the folder is not indexed. No page on the new site links into `old-site/`.
+- Keep at the repo root: the Google Analytics tag (`G-L9Q1GGPFNJ`), `google60a4458eb7076ec4.html` (Search Console verification), favicons. Update `sitemap.xml` to the new single page.
+- Publication PDFs move to the new site's own folder (copied out of the archive) so the new page doesn't depend on `old-site/`.
+
+## Who sees what
+
+Everything in the repo is public. Nothing confidential goes in. No phone number anywhere, including in the resume PDF. The portfolio lives off-site under Zidong's own access control.
+
+## Sources
+
+- Resume and LinkedIn text, copied into `SOURCES.md` (phone number omitted).
+- Current site repo for academic text, publications, collaborator links, PDFs.
+- Links: LinkedIn `https://www.linkedin.com/in/zidong-zhao-10076559/`, GitHub `https://github.com/zidongzhao/`, Scholar `https://scholar.google.com/citations?user=AtnndQsAAAAJ`.
+- DOIs: 10.1016/j.jesp.2023.104521, 10.1037/emo0000890, 10.1017/S0140525X19003133, 10.1037/xge0000565, 10.1080/02699931.2015.1110117.
+
+## Inputs Zidong provides
+
+- Resume PDF exported from the Google Doc with the phone number removed.
+- Final approval of all copy before deploy. New copy uses only facts from the sources above.
+
+## Calls made without explicit sign-off (check these)
+
+- Instagram is written in the past tense (resume says the role ended Sep 2026; LinkedIn still says Present).
+- HelloNova is included although it's not on the resume.
+- Princeton appears in both Experience and Academics: a short card in Experience, the research story in Academics.
+- The resume PDF keeps the email address, because recruiters expect it there. The no-scrapeable-email rule applies to the HTML only.
+- Old top-level URLs (`/cv.html`, `/publications.html`, `/research.html`, `/contact.html`, `/collaborators.html`, `/publications/*.html`) get tiny redirect pages to the matching section of the new page, so inbound links from Scholar and old CVs keep working.
+- `SOURCES.md` is gitignored, since the repo is public and it holds the plain email address.
+- The BBS paper links to the full commentary issue PDF at `#page=52`, as the old site did.
+
+## Left to the builder
+
+Exact copy wording (for Zidong's review), spacing, icon source (inline SVG preferred over the old PNGs), scroll-highlighting of the active nav item, file layout inside the repo.
+
+## End-to-end check
+
+Served locally (`python -m http.server` via uv, or any static server): at desktop width and at 375px width, in light and dark mode, all six sections render; the sidebar links scroll to the right sections; the resume embed shows the PDF and the download returns the file; all publication PDF and DOI links resolve; the hover effects work and stop under reduced motion; no email address appears in the HTML source and no phone number appears in the HTML or the new resume PDF; the old URLs redirect; `old-site/index.html` exists with its original structure. After deploy, the same checks pass on zidongzhao.github.io.
+
+## Later
+
+- Page motion: sliding highlight in the sidebar and sections that fade up on scroll. Decide per section once the real page exists.
+- Portfolio URL to replace "Coming soon".
+- Personal projects as entries in Projects once they exist; move to Astro if they grow into many pages.
