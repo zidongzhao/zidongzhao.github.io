@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = []
+# dependencies = ["pypdf"]
 # ///
 """Checks every testable rule in SPEC.md. Run: uv run tests/check_site.py"""
 
@@ -228,6 +228,50 @@ def test_photo():
     check("photo file under 200 KB", 0 < len(data) < 200_000, f"{len(data)} bytes")
     # Phone photos carry EXIF (location, device); the public copy must not.
     check("photo has no EXIF metadata", bool(data) and not _has_exif(data))
+
+
+DOIS = ["10.1016/j.jesp.2023.104521", "10.1037/emo0000890", "10.1017/S0140525X19003133",
+        "10.1037/xge0000565", "10.1080/02699931.2015.1110117"]
+RESUME = "assets/Zidong-Zhao-Resume.pdf"
+
+
+def test_projects():
+    proj = section("projects")
+    card = re.search(r'<article class="card[^"]*"[^>]*>(.*?)</article>', proj, re.S)
+    body = card.group(1) if card else ""
+    btns = [a for n, a in tags(body) if n == "button"]
+    check("portfolio card has disabled Coming soon button",
+          "Coming soon" in visible_text(body) and any("disabled" in a for a in btns) and "href" not in body)
+    pubs = re.findall(r'<li class="pub">(.*?)</li>', proj, re.S)
+    check("five publications", len(pubs) == 5, str(len(pubs)))
+    for i, pub in enumerate(pubs):
+        hrefs = [a.get("href", "") for n, a in tags(pub) if n == "a"]
+        pdfs = [h for h in hrefs if h.startswith("assets/papers/")]
+        dois = [h for h in hrefs if h.startswith("https://doi.org/")]
+        check(f"pub {i + 1} has one existing PDF", len(pdfs) == 1 and (ROOT / pdfs[0].split("#")[0]).exists(), str(pdfs))
+        check(f"pub {i + 1} has one DOI", len(dois) == 1, str(dois))
+        check(f"pub {i + 1} journal italic", re.search(r"<(i|em)>", pub) is not None)
+    for d in DOIS:
+        check(f"DOI {d} linked", f"https://doi.org/{d}" in proj)
+    check("BBS opens at page 52", "assets/papers/BBS2020_PredictiveSubstrate.pdf#page=52" in proj)
+    check("Thornton opens at page 2", "assets/papers/ZhaoThorntonTamir2020.pdf#page=2" in proj)
+
+
+def test_resume():
+    res = section("resume")
+    t = tags(res)
+    embeds = [i for i, (n, a) in enumerate(t) if n in ("embed", "object") and RESUME in (a.get("src", "") + a.get("data", ""))]
+    dls = [i for i, (n, a) in enumerate(t) if n == "a" and "btn" in a.get("class", "") and "download" in a
+           and a.get("href") == RESUME]
+    check("resume embed", bool(embeds))
+    check("download button before embed", bool(dls and embeds) and dls[0] < embeds[0])
+    pdf = ROOT / RESUME
+    check("resume PDF exists", pdf.exists())
+    if pdf.exists():
+        from pypdf import PdfReader
+        text = " ".join(page.extract_text() or "" for page in PdfReader(pdf).pages)
+        check("resume PDF has text", len(text) > 500, str(len(text)))
+        check("resume PDF has no phone number", PHONE_RE.search(text) is None)
 
 
 def main() -> None:
