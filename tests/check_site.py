@@ -46,6 +46,8 @@ def test_archive():
     pages = [p for p in (ROOT / "old-site").rglob("*.html") if p.name != "google60a4458eb7076ec4.html"]
     missing = [str(p.relative_to(ROOT)) for p in pages if '<meta name="robots" content="noindex">' not in p.read_text(errors="replace")]
     check("archive pages are noindex", bool(pages) and not missing, ", ".join(missing[:5]))
+    # Zidong asked for this order screenshot (address, card digits) to be removed from the public repo.
+    check("order screenshot removed", not list(ROOT.rglob("maxkare.png")))
     robots = (ROOT / "robots.txt").read_text() if (ROOT / "robots.txt").exists() else ""
     check("robots.txt disallows /old-site/", "Disallow: /old-site/" in robots.splitlines())
 
@@ -157,6 +159,75 @@ def test_contrast():
 
 def test_analytics():
     check("GA tag present", "G-L9Q1GGPFNJ" in index())
+
+
+def section(sid: str) -> str:
+    html = index()
+    start = html.find(f'<section id="{sid}"')
+    return html[start: html.find("</section>", start)] if start >= 0 else ""
+
+
+def visible_text(html: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
+
+
+POSITIONING = "Bridging human behavior and complex technical systems, turning experience into measurable signals and product decisions."
+EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}")
+FOCUS = ["UX Research", "Product Data Science", "Behavioral Insights"]
+PHONE_RE =re.compile(r"\(?\b\d{3}\)?[ .-]?\d{3}[ .-]?\d{4}\b")
+
+
+def test_copy():
+    check("About has positioning line", POSITIONING in visible_text(section("about")))
+    texts = {p: p.read_text(errors="replace") for p in served_text_files()}
+    emails = [str(p.relative_to(ROOT)) for p, t in texts.items() if EMAIL_RE.search(t) or "mailto:" in t]
+    check("no email address or mailto in served files", not emails, ", ".join(emails))
+    phones = [str(p.relative_to(ROOT)) for p, t in texts.items() if PHONE_RE.search(visible_text(t))]
+    check("no phone number in served files", not phones, ", ".join(phones))
+    check("Contact shows obfuscated email", "zhaozidong1993 at gmail dot com" in visible_text(section("contact")))
+    exp = section("experience")
+    cards = re.findall(r'<article class="card[^"]*"[^>]*>(.*?)</article>', exp, re.S)
+    orgs = ["Instagram", "HelloNova", "Yale", "Princeton"]
+    check("four experience cards", len(cards) == 4, str(len(cards)))
+    check("experience order", len(cards) == 4 and all(o in visible_text(c) for o, c in zip(orgs, cards)))
+    paras = re.findall(r"<p[^>]*>(.*?)</p>", section("academics"), re.S)
+    check("Academics opens with 'In a previous life'", bool(paras) and "In a previous life" in paras[0])
+    check("no posters in Academics", "poster" not in section("academics").lower())
+    focus = re.search(r'<ul class="focus"[^>]*>(.*?)</ul>', index(), re.S)
+    items = [visible_text(i).strip() for i in re.findall(r"<li>(.*?)</li>", focus.group(1), re.S)] if focus else []
+    check("sidebar focus line", items == FOCUS, str(items))
+    check("old tagline removed", "Making human experience measurable" not in index())
+    desc = next((a.get("content", "") for n, a in tags(index()) if n == "meta" and a.get("name") == "description"), "")
+    check("meta description mentions product data science", "product data science" in desc)
+    check("About toolkit names DS skills", all(k in visible_text(section("about")) for k in ["A/B testing", "causal inference", "SQL"]))
+
+
+def _has_exif(data: bytes) -> bool:
+    i = 2
+    while i + 4 <= len(data) and data[i] == 0xFF:
+        marker, length = data[i + 1], int.from_bytes(data[i + 2:i + 4], "big")
+        if marker == 0xE1 and data[i + 4:i + 8] == b"Exif":
+            return True
+        if marker == 0xDA:
+            break
+        i += 2 + length
+    return False
+
+
+def test_photo():
+    imgs = [a for n, a in tags(section("about")) if n == "img"]
+    check("About has one photo", len(imgs) == 1)
+    if not imgs:
+        return
+    a = imgs[0]
+    check("photo src is assets/photo.jpg", a.get("src") == "assets/photo.jpg")
+    check("photo has alt text", len(a.get("alt", "")) > 5)
+    check("photo has width and height", a.get("width", "").isdigit() and a.get("height", "").isdigit())
+    f = ROOT / "assets/photo.jpg"
+    data = f.read_bytes() if f.exists() else b""
+    check("photo file under 200 KB", 0 < len(data) < 200_000, f"{len(data)} bytes")
+    # Phone photos carry EXIF (location, device); the public copy must not.
+    check("photo has no EXIF metadata", bool(data) and not _has_exif(data))
 
 
 def main() -> None:

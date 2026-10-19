@@ -25,7 +25,7 @@ Visitor lands, reads the About, scans Experience, then either opens the portfoli
 5. **Academics.** One short paragraph each on the Princeton and Vanderbilt work, condensed from the current `research.html` and homepage. Collaborators as one line of linked names (links from `collaborators.html`). Mentors named on the old homepage (Diana Tamir, Tom Griffiths, Laurie Santos, Bunmi Olatunji, Sohee Park) keep their links. No posters. Start the section with something like "In a previous life, I did experimental, computational, and neuroimaging work in psychology in academia" 
 6. **Contact.** Email shown as plain text "zhaozidong1993 at gmail dot com", with no `mailto:` link and no address in the HTML source in usable form. Social icons: LinkedIn, GitHub, Google Scholar.
 
-**Sidebar (desktop):** pinned left. Name in serif ("Zidong Zhao"), 赵紫东, "Quantitative UX Researcher", one-line tagline ("Making human experience measurable." is the working version; the full positioning line is too long for the sidebar), section links, social icons. **Phone width:** the sidebar becomes a top header with a compact menu; no horizontal scroll.
+**Sidebar (desktop):** pinned left. Name in serif ("Zidong Zhao"), 赵紫东, "Quantitative UX Researcher", a muted focus line in place of a tagline: "UX Research · Product Data Science · Behavioral Insights" (high level; toolkit details live in About), section links, social icons. **Phone width:** the sidebar becomes a top header with a compact menu; no horizontal scroll.
 
 ## Visual system (decided in mockups)
 
