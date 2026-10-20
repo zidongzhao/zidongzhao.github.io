@@ -253,7 +253,7 @@ section:last-child { min-height: 75vh; }
 /* Social icons: playful tilt and grow */
 .social { display: flex; align-items: center; gap: .75rem; margin-top: 1rem; }
 /* Sidebar: the theme switch drops to a second row, under the first icon. */
-@media (min-width: 700px) { .social { display: grid; grid-template-columns: repeat(3, 40px); row-gap: .5rem; margin-top: 0; } }
+@media (min-width: 700px) { .social { display: grid; grid-template-columns: repeat(3, 40px); row-gap: 1rem; margin-top: 0; } }
 /* Phones: keep the header short by putting the switch in the icon row instead. */
 @media (max-width: 699px) { .theme-toggle { order: -1; } }
 .social a {
