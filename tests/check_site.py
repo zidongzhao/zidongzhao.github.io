@@ -143,10 +143,13 @@ def contrast(a: str, b: str) -> float:
 def test_contrast():
     c = css()
     light = re.search(r"^:root\s*\{([^}]*)\}", c, re.M)
-    dark = re.search(r"@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{([^}]*)\}", c)
-    check("light and dark token blocks", bool(light and dark))
-    if not (light and dark):
+    # Dark tokens apply from the system setting (unless the visitor chose light) or from an explicit dark choice.
+    dark = re.search(r'@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root:not\(\[data-theme="light"\]\)\s*\{([^}]*)\}', c)
+    chosen = re.search(r':root\[data-theme="dark"\]\s*\{([^}]*)\}', c)
+    check("light and dark token blocks", bool(light and dark and chosen))
+    if not (light and dark and chosen):
         return
+    check("system and chosen dark tokens match", _tokens(dark.group(1)) == _tokens(chosen.group(1)))
     for mode, block in [("light", light.group(1)), ("dark", dark.group(1))]:
         tok = _tokens(block)
         for fg in ["--ink", "--body", "--muted", "--accent"]:

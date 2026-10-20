@@ -90,6 +90,43 @@ with sync_playwright() as p:
         ctx.close()
     check("dark mode has its own, softer texture", paper["light"] != paper["dark"])
 
+    # Theme switch: follows the system by default, flips on click, remembers the choice
+    bg = "() => getComputedStyle(document.body).backgroundColor"
+    for scheme, expect in [("light", "false"), ("dark", "true")]:
+        ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme=scheme)
+        page = ctx.new_page()
+        page.goto(base + "/", wait_until="networkidle")
+        if not page.query_selector("#theme-toggle"):
+            check(f"{scheme} system: theme switch exists", False)
+            ctx.close()
+            continue
+        check(f"{scheme} system: switch visible and reads {expect}", page.is_visible("#theme-toggle")
+              and page.get_attribute("#theme-toggle", "aria-checked") == expect)
+        before = page.evaluate(bg)
+        page.click("#theme-toggle")
+        after = page.evaluate(bg)
+        check(f"{scheme} system: click flips the theme", after != before
+              and page.get_attribute("#theme-toggle", "aria-checked") != expect, f"{before} -> {after}")
+        page.reload(wait_until="networkidle")
+        check(f"{scheme} system: choice survives reload", page.evaluate(bg) == after, page.evaluate(bg))
+        ctx.close()
+    ctx = browser.new_context(viewport={"width": 1280, "height": 900})
+    page = ctx.new_page()
+    page.goto(base + "/", wait_until="networkidle")
+    has_switch = page.query_selector("#theme-toggle") is not None
+    sw, li = (page.evaluate(rect, "#theme-toggle") if has_switch else {"l": -99, "t": -99, "r": 0, "b": 0}), page.evaluate(rect, ".social a")
+    check("desktop: switch sits just below the first icon", sw["t"] >= li["b"] and sw["t"] - li["b"] < 20
+          and abs(sw["l"] - li["l"]) < 2, f"switch {sw['l']:.0f},{sw['t']:.0f} icon {li['l']:.0f},{li['b']:.0f}")
+    ctx.close()
+    ctx = browser.new_context(viewport={"width": 375, "height": 800})
+    page = ctx.new_page()
+    page.goto(base + "/", wait_until="networkidle")
+    has_switch = page.query_selector("#theme-toggle") is not None
+    sw, li = (page.evaluate(rect, "#theme-toggle") if has_switch else {"l": -99, "t": -99, "r": 999, "b": -99}), page.evaluate(rect, ".social a")
+    check("phone: switch in the icon row, left of the first icon", abs((sw["t"] + sw["b"]) / 2 - (li["t"] + li["b"]) / 2) < 3
+          and sw["r"] <= li["l"], f"switch {sw} icon {li}")
+    ctx.close()
+
     # Desktop interactions
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
     page = ctx.new_page()
@@ -167,6 +204,7 @@ with sync_playwright() as p:
     page.goto(base + "/")
     check("no JS: nav visible", page.is_visible("#site-nav"))
     check("no JS: toggle hidden", not page.is_visible("#nav-toggle"))
+    check("no JS: theme switch hidden", not page.is_visible("#theme-toggle"))
     ctx.close()
     ctx = browser.new_context(viewport={"width": 375, "height": 800})
     page = ctx.new_page()

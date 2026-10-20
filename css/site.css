@@ -20,8 +20,10 @@
   color-scheme: light dark;
 }
 
+/* Dark tokens apply from the system setting unless the visitor picked light with the switch,
+   or from an explicit dark pick. Keep the two lists identical (tests/check_site.py checks). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #16201a;
     --card: #1e2a23;
     --card-border: #33463a;
@@ -37,6 +39,23 @@
     --paper: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27211%27%20height%3D%27211%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.95%27%20numOctaves%3D%272%27%20seed%3D%273%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%201.000%20%200%200%200%200%201.000%20%200%200%200%200%201.000%20%2040%200%200%200%20-33.40%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.08%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27317%27%20height%3D%27317%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.26%27%20numOctaves%3D%272%27%20seed%3D%2711%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%200.851%20%200%200%200%200%200.561%20%200%200%200%200%200.690%20%2040%200%200%200%20-32.20%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.3%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E");
   }
 }
+:root[data-theme="dark"] {
+  --bg: #16201a;
+  --card: #1e2a23;
+  --card-border: #33463a;
+  --ink: #eef6f0;
+  --body: #c9d6cc;
+  --muted: #87968c;
+  --accent: #8fd19e;
+  --pink-divider: #5a3a4a;
+  --pink-border: #33463a;
+  --pink-edge: #d98fb0;
+  --pink-soft: #4a2e3c;
+  /* Softer than light mode: pale specks on dark green read much louder. */
+  --paper: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27211%27%20height%3D%27211%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.95%27%20numOctaves%3D%272%27%20seed%3D%273%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%201.000%20%200%200%200%200%201.000%20%200%200%200%200%201.000%20%2040%200%200%200%20-33.40%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.08%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27317%27%20height%3D%27317%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.26%27%20numOctaves%3D%272%27%20seed%3D%2711%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%200.851%20%200%200%200%200%200.561%20%200%200%200%200%200.690%20%2040%200%200%200%20-32.20%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.3%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E");
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
 
 /* Base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -221,14 +240,33 @@ section:last-child { min-height: 75vh; }
 .prose a:not(.btn):hover, .prose a:not(.btn):focus-visible { background-size: 100% 100%; }
 
 /* Social icons: playful tilt and grow */
-.social { display: flex; gap: .75rem; margin-top: 1rem; }
-@media (min-width: 700px) { .social { margin-top: 0; } }
+.social { display: flex; align-items: center; gap: .75rem; margin-top: 1rem; }
+/* Sidebar: the theme switch drops to a second row, under the first icon. */
+@media (min-width: 700px) { .social { display: grid; grid-template-columns: repeat(3, 40px); row-gap: .5rem; margin-top: 0; } }
+/* Phones: keep the header short by putting the switch in the icon row instead. */
+@media (max-width: 699px) { .theme-toggle { order: -1; } }
 .social a {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
   color: var(--accent); background: var(--card); border: 1.5px solid var(--pink-edge);
   transition: transform .25s ease, background-color .25s ease;
 }
 .social a:hover, .social a:focus-visible { transform: rotate(-10deg) scale(1.12); background: var(--pink-soft); }
+
+/* Theme switch: the knob slides under the icon of the active theme. Hidden until js/site.js wires it up. */
+.theme-toggle {
+  position: relative; width: 40px; height: 22px; padding: 0 3.5px; border-radius: 11px;
+  display: inline-flex; align-items: center; justify-content: space-between;
+  color: var(--muted); background: var(--card); border: 1.5px solid var(--pink-edge); cursor: pointer;
+}
+.theme-toggle[hidden] { display: none; }
+.theme-toggle svg { position: relative; z-index: 1; }
+.theme-toggle .knob {
+  position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); transition: transform .2s ease;
+}
+.theme-toggle[aria-checked="true"] .knob { transform: translateX(18px); }
+.theme-toggle[aria-checked="false"] .sun, .theme-toggle[aria-checked="true"] .moon { color: var(--card); }
+.theme-toggle:hover { background: var(--pink-soft); }
 
 /* Experience cards tilt toward the cursor (js/site.js sets the transform) */
 #experience .card, #projects .card { transition: transform .2s ease-out; will-change: transform; }
@@ -240,4 +278,5 @@ section:last-child { min-height: 75vh; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .card, .social a, .prose a { transition: none; transform: none !important; }
+  .theme-toggle .knob { transition: none; }
 }

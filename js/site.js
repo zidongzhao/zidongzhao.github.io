@@ -56,6 +56,26 @@ function initTilt() {
   });
 }
 
+function initTheme() {
+  const toggle = document.getElementById('theme-toggle');
+  if (!toggle) return;
+  const root = document.documentElement;
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+  // No saved choice means the system setting decides; the head script applies a saved one before paint.
+  const isDark = () => (root.dataset.theme || (systemDark.matches ? 'dark' : 'light')) === 'dark';
+  const sync = () => toggle.setAttribute('aria-checked', String(isDark()));
+
+  toggle.hidden = false;
+  sync();
+  toggle.addEventListener('click', () => {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    try { localStorage.setItem('theme', root.dataset.theme); } catch (e) { /* private mode: choice lasts this visit only */ }
+    sync();
+  });
+  systemDark.addEventListener('change', sync);
+}
+
 initMenu();
 initActiveNav();
 initTilt();
+initTheme();
