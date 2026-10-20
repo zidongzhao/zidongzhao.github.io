@@ -218,17 +218,19 @@ section:last-child { min-height: 75vh; }
 
 /* Projects and resume */
 .subhead { font-size: 1.0625rem; font-weight: 600; color: var(--ink); margin: 2rem 0 .75rem; }
-/* Publications fold away by default; the native disclosure works without JS and from the keyboard. */
-.pubs-box > summary { display: flex; align-items: baseline; gap: .5rem; cursor: pointer; list-style: none; width: fit-content; }
-.pubs-box > summary::-webkit-details-marker { display: none; }
-.pubs-box > summary::before {
+/* Publications and academic detail fold away by default; the native disclosure works without JS and from the keyboard. */
+.fold > summary { display: flex; align-items: baseline; gap: .5rem; cursor: pointer; list-style: none; width: fit-content; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::before {
   content: "+"; width: 1em; flex: none; text-align: center;
   font-size: 1.35em; font-weight: 400; line-height: 1; color: var(--accent);
   transition: transform .2s ease;
 }
 /* The plus turns a quarter-diagonal into an x when open. */
-.pubs-box[open] > summary::before { transform: rotate(45deg); }
-.pubs-box > summary:hover { color: var(--accent); }
+.fold[open] > summary::before { transform: rotate(45deg); }
+.fold > summary:hover { color: var(--accent); }
+.fold-body h3 { font-size: 1rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 .5rem; }
+.fold-body h3:first-child { margin-top: 0; }
 .pubs { padding-left: 1.25rem; margin: 0; }
 .pub { padding: .8rem 0; }
 .pub + .pub { border-top: 1.5px dotted var(--pink-edge); }
@@ -303,5 +305,5 @@ section:last-child { min-height: 75vh; }
   html { scroll-behavior: auto; }
   .card, .social a, .prose a { transition: none; transform: none !important; }
   .theme-toggle .knob { transition: none; }
-  .pubs-box > summary::before { transition: none; }
+  .fold > summary::before { transition: none; }
 }
