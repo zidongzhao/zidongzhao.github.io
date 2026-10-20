@@ -142,6 +142,25 @@ with sync_playwright() as p:
         check(f"{scheme}: photo frame matches the card style", photo[0] == "0px" and photo[1:] == card, f"{photo} vs {card}")
         ctx.close()
 
+    # At the top of the page, the ABOUT label's capitals line up with the name's capitals
+    cap_top = """s => {
+      const el = document.querySelector(s), probe = document.createElement('span');
+      probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+      el.prepend(probe);
+      const baseline = probe.getBoundingClientRect().bottom;
+      probe.remove();
+      const cs = getComputedStyle(el), ctx = document.createElement('canvas').getContext('2d');
+      ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      return baseline - ctx.measureText(el.textContent.trim()[0].toUpperCase()).actualBoundingBoxAscent;
+    }"""
+    for w in [1280, 900]:
+        ctx = browser.new_context(viewport={"width": w, "height": 900})
+        page = ctx.new_page()
+        page.goto(base + "/", wait_until="networkidle")
+        name, about = page.evaluate(cap_top, ".name"), page.evaluate(cap_top, "#about .label")
+        check(f"{w}px: ABOUT caps align with the name", abs(name - about) <= 1, f"name {name:.1f} about {about:.1f}")
+        ctx.close()
+
     # Desktop interactions
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
     page = ctx.new_page()
