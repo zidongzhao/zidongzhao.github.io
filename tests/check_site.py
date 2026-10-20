@@ -272,11 +272,9 @@ def test_resume():
     embeds = [i for i, (n, a) in enumerate(t) if n in ("embed", "object") and RESUME in (a.get("src", "") + a.get("data", ""))]
     dls = [i for i, (n, a) in enumerate(t) if n == "a" and "btn" in a.get("class", "") and "download" in a
            and a.get("href") == RESUME]
-    check("resume embed", bool(embeds))
-    check("download button before embed", bool(dls and embeds) and dls[0] < embeds[0])
-    # Android Chrome and plugin-less browsers can't render inline PDFs; <object> shows its fallback instead.
-    obj = re.search(r"<object[^>]*>(.*?)</object>", res, re.S)
-    check("resume viewer has a download fallback", bool(obj) and RESUME in obj.group(1) and "download" in obj.group(1))
+    # Zidong chose download-only: no inline viewer, and no commented-out viewer left in the source.
+    check("resume download button", bool(dls))
+    check("no inline resume viewer", not embeds and "<object" not in res and "<!--" not in res)
     pdf = ROOT / RESUME
     check("resume PDF exists", pdf.exists())
     if pdf.exists():

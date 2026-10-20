@@ -101,8 +101,6 @@ with sync_playwright() as p:
     link.hover(); page.wait_for_timeout(500)
     check("link sweep fills on hover", "100%" in link.evaluate("e => getComputedStyle(e).backgroundSize"))
     page.screenshot(path=str(out / "hover-link.png"))
-    embed = page.locator("#resume object")
-    check("resume embed sized", (embed.bounding_box() or {}).get("height", 0) > 300)
     resp = page.request.get(base + "/assets/Zidong-Zhao-Resume.pdf")
     check("resume PDF served", resp.ok and resp.headers.get("content-type", "").startswith("application/pdf"))
     page.locator("#resume").scroll_into_view_if_needed()
