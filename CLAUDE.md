@@ -6,7 +6,7 @@ Zidong's personal website, served at https://zidongzhao.github.io. **Public**: e
 
 - Plain HTML, CSS, vanilla JS. No framework, no build step.
 - Run locally: `uv run python -m http.server 8000`, then open http://localhost:8000
-- Check: `uv run tests/check_site.py`; browser checks: `uv run tests/browser_check.py http://127.0.0.1:8000 /tmp/shots` (first time: `uv run --with playwright playwright install chromium`)
+- Check: `uv run tests/check_site.py`; browser checks: `uv run tests/browser_check.py http://127.0.0.1:8000 /tmp/shots` (first time: `uv run --with playwright playwright install chromium webkit`). WebKit stands in for iOS Safari; it is close, not exact.
 - Deploy: merge into `master` and push; GitHub Pages publishes it. Ask Zidong first.
 
 ## Decisions
@@ -19,3 +19,6 @@ Zidong's personal website, served at https://zidongzhao.github.io. **Public**: e
 ## Gotchas
 
 - SPEC.md has been edited in the IDE and by Claude at the same time; the IDE save overwrote Claude's edits once. Re-read before editing.
+- Phone vs. sidebar layout is decided by two complementary media queries, `(max-width: 699px), (max-height: 499px)` and `(min-width: 700px) and (min-height: 500px)`. Change them together.
+- The sticky phone Menu bar depends on `--bar-hide` and `--bar-h`, measured in `js/site.js`. Without JS the header just scrolls away.
+- Zidong tests on Android only; iOS is covered by Playwright WebKit alone.
