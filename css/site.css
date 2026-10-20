@@ -89,8 +89,8 @@ section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
 .role { font-size: .95rem; font-weight: 600; line-height: 1.4; color: var(--accent); margin-top: .9rem; }
 /* Focus areas read as one muted line separated by middots. */
 .focus { list-style: none; padding: 0; margin: .5rem 0 0; font-size: .95rem; line-height: 1.5; color: var(--muted); }
-.focus li { display: inline; }
-.focus li + li::before { content: " · "; }
+.focus li { display: inline; white-space: nowrap; }
+.focus li:not(:last-child)::after { content: " ·"; }
 .label {
   font-size: .75rem; font-weight: 600; line-height: 1.2; letter-spacing: .1em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 1.25rem;
@@ -170,6 +170,7 @@ section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
 }
 /* Phones often render only page one of an embedded PDF; the download button above carries the full file. */
 @media (max-width: 899px) { .resume-embed { height: 60vh; } }
+.resume-fallback { padding: 1.5rem; }
 
 /* Cards */
 .card {
@@ -194,7 +195,8 @@ section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
 .prose a:not(.btn):hover, .prose a:not(.btn):focus-visible { background-size: 100% 100%; }
 
 /* Social icons: playful tilt and grow */
-.social { display: flex; gap: .75rem; }
+.social { display: flex; gap: .75rem; margin-top: 1rem; }
+@media (min-width: 900px) { .social { margin-top: 0; } }
 .social a {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
   color: var(--accent); background: var(--card); border: 1.5px solid var(--pink-edge);

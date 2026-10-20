@@ -6,7 +6,7 @@ Zidong's personal website, served at https://zidongzhao.github.io. **Public**: e
 
 - Plain HTML, CSS, vanilla JS. No framework, no build step.
 - Run locally: `uv run python -m http.server 8000`, then open http://localhost:8000
-- Check: `uv run tests/check_site.py`
+- Check: `uv run tests/check_site.py`; browser checks: `uv run tests/browser_check.py http://127.0.0.1:8000 /tmp/shots` (first time: `uv run --with playwright playwright install chromium`)
 - Deploy: merge into `master` and push; GitHub Pages publishes it. Ask Zidong first.
 
 ## Decisions

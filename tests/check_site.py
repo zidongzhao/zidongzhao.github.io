@@ -265,6 +265,9 @@ def test_resume():
            and a.get("href") == RESUME]
     check("resume embed", bool(embeds))
     check("download button before embed", bool(dls and embeds) and dls[0] < embeds[0])
+    # Android Chrome and plugin-less browsers can't render inline PDFs; <object> shows its fallback instead.
+    obj = re.search(r"<object[^>]*>(.*?)</object>", res, re.S)
+    check("resume viewer has a download fallback", bool(obj) and RESUME in obj.group(1) and "download" in obj.group(1))
     pdf = ROOT / RESUME
     check("resume PDF exists", pdf.exists())
     if pdf.exists():
@@ -283,6 +286,8 @@ def test_interactions():
         check(f"reduced motion covers {sel}", sel in block)
     check("reduced motion disables transition and transform", "transition: none" in block and "transform: none" in block)
     check(":focus-visible styles", ":focus-visible" in c)
+    check("focus items never break mid-phrase", re.search(r"\.focus li\s*\{[^}]*white-space:\s*nowrap", c) is not None)
+    check("social row spaced from nav", re.search(r"\.social\s*\{[^}]*margin-top", c) is not None)
     hide = re.findall(r"([^{}]*#site-nav[^{}]*)\{[^}]*display:\s*none", c)
     check("mobile menu only collapses with JS", bool(hide) and all(".js" in s for s in hide), str(hide))
     links = re.findall(r"<a ([^>]*)>\s*(<svg[^>]*>)", re.search(r'<div class="social">(.*?)</div>', index(), re.S).group(1)
