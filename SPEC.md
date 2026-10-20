@@ -56,7 +56,7 @@ Scale (rem at a 16px root; desktop / phone):
 | Role | Font | Size | Weight | Line height |
 |---|---|---|---|---|
 | Name (sidebar or phone header) | Newsreader | 2.5 / 2 | 500 | 1.05 |
-| 赵紫东 | Noto Serif SC | 1.0 / 0.95 | 400 | 1.3 |
+| 赵紫东 | Noto Serif SC | 1.5 / 1.35 | 400 | 1.3 |
 | Positioning line (About opener) | Newsreader | 1.5 / 1.25 | 500 | 1.35 |
 | Role title in sidebar | Plex | 0.95 | 600 | 1.4 |
 | Sidebar tagline, nav links | Plex | 0.95 | 400 / 500 | 1.5 |
