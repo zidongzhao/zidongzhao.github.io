@@ -231,6 +231,8 @@ section:last-child { min-height: 75vh; }
 .fold > summary:hover { color: var(--accent); }
 .fold-body h3 { font-size: 1rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 .5rem; }
 .fold-body h3:first-child { margin-top: 0; }
+/* Same dotted divider as between publications, here between research themes. */
+.fold-body h3:not(:first-child) { border-top: 1.5px dotted var(--pink-edge); padding-top: 1.25rem; margin-top: 1.25rem; }
 .pubs { padding-left: 1.25rem; margin: 0; }
 .pub { padding: .8rem 0; }
 .pub + .pub { border-top: 1.5px dotted var(--pink-edge); }
