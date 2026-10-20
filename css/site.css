@@ -230,7 +230,7 @@ section:last-child { min-height: 75vh; }
 .social a:hover, .social a:focus-visible { transform: rotate(-10deg) scale(1.12); background: var(--pink-soft); }
 
 /* Experience cards tilt toward the cursor (js/site.js sets the transform) */
-#experience .card { transition: transform .2s ease-out; will-change: transform; }
+#experience .card, #projects .card { transition: transform .2s ease-out; will-change: transform; }
 
 /* Keyboard focus */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }

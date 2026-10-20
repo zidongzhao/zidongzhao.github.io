@@ -72,7 +72,7 @@ Body text lines stay under about 70 characters. Name and positioning line are th
 
 - Text links: pink highlight sweeps across on hover.
 - Social icons: playful tilt and grow on hover.
-- Experience cards: tilt toward the cursor (the edge nearest it lifts forward), at most 2° per axis.
+- Experience and portfolio cards: tilt toward the cursor (the edge nearest it lifts forward), at most 2° per axis.
 - All of the above also respond to keyboard focus where it makes sense, and are off under `prefers-reduced-motion`. Card tilt is off on touch devices.
 
 ## Stack and deploy (decided)

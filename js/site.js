@@ -44,7 +44,7 @@ function initTilt() {
   if (!finePointer || reducedMotion) return;
 
   const maxDeg = 2;
-  document.querySelectorAll('#experience .card').forEach((card) => {
+  document.querySelectorAll('#experience .card, #projects .card').forEach((card) => {
     card.addEventListener('pointermove', (e) => {
       const r = card.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width - 0.5;

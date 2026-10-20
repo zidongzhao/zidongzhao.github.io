@@ -88,6 +88,12 @@ with sync_playwright() as p:
     check("card tilts toward cursor", rot.get("Y", 0) < 0 and rot.get("X", 0) < 0, tf)
     check("card tilt is gentle", rot and max(abs(v) for v in rot.values()) <= 2.5, tf)
     page.screenshot(path=str(out / "hover-card.png"))
+    pcard = page.locator("#projects .card").first
+    pcard.scroll_into_view_if_needed()
+    b = pcard.bounding_box()
+    page.mouse.move(b["x"] + b["width"] * 0.9, b["y"] + b["height"] * 0.2)
+    page.wait_for_timeout(300)
+    check("portfolio card tilts too", "rotateY(-" in (pcard.evaluate("e => e.style.transform") or ""))
     icon = page.locator(".social a").first
     icon.hover(); page.wait_for_timeout(400)
     check("social icon tilts on hover", icon.evaluate("e => getComputedStyle(e).transform") != "none")
