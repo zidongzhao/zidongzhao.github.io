@@ -207,7 +207,8 @@ section:last-child { min-height: 75vh; }
 .lead-small { font-size: 1.0625rem; font-weight: 500; color: var(--ink); }
 .collaborators { font-size: .95rem; color: var(--muted); }
 .email { font-size: 1.125rem; font-weight: 600; color: var(--ink); }
-.card .meta { margin-bottom: .2rem; }
+.card .card-title + .meta { margin-top: .1rem; }
+.card .meta + p { margin-top: .5rem; }
 .card .card-title + p { margin-top: .5rem; }
 
 /* Projects and resume */
@@ -218,9 +219,11 @@ section:last-child { min-height: 75vh; }
 .card-action { margin-top: 1rem; }
 
 /* Cards */
+/* Ink outline with a solid offset shadow: printed-zine feel instead of a rounded pastel panel. */
 .card {
-  background: var(--card); border: 1px solid var(--card-border); border-left: 3px solid var(--pink-edge);
-  border-radius: 10px; padding: 1.1rem 1.25rem; margin-bottom: 1rem;
+  background: var(--card); border: 1.5px solid var(--ink); border-radius: 0;
+  box-shadow: 5px 5px 0 var(--pink-edge);
+  padding: 1.1rem 1.25rem; margin: 0 5px 1.4rem 0;
 }
 
 /* Phone menu: collapsed only when JS is running, so it stays usable without JS */
@@ -269,7 +272,11 @@ section:last-child { min-height: 75vh; }
 .theme-toggle:hover { background: var(--pink-soft); }
 
 /* Experience cards tilt toward the cursor (js/site.js sets the transform) */
-#experience .card, #projects .card { transition: transform .2s ease-out; will-change: transform; }
+/* The transparent outline and hidden backface make Chrome anti-alias the ink border while tilted. */
+#experience .card, #projects .card {
+  transition: transform .2s ease-out; will-change: transform;
+  outline: 1px solid transparent; backface-visibility: hidden;
+}
 
 /* Keyboard focus */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }

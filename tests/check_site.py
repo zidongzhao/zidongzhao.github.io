@@ -194,6 +194,8 @@ def test_copy():
     orgs = ["Instagram", "HelloNova", "Yale", "Princeton"]
     check("four experience cards", len(cards) == 4, str(len(cards)))
     check("experience order", len(cards) == 4 and all(o in visible_text(c) for o, c in zip(orgs, cards)))
+    check("experience cards lead with the title, dates below", len(cards) == 4 and all(
+        "<h3" in c and 'class="meta"' in c and c.index("<h3") < c.index('class="meta"') for c in cards))
     nova = cards[1] if len(cards) == 4 else ""
     title = re.search(r"<h3[^>]*>(.*?)</h3>", nova, re.S)
     check("HelloNova title is not a link", bool(title) and "<a " not in title.group(1))

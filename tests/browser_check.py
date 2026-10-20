@@ -127,6 +127,18 @@ with sync_playwright() as p:
           and sw["r"] <= li["l"], f"switch {sw} icon {li}")
     ctx.close()
 
+    # Cards: ink outline with an offset pink shadow, no accent stripe, title above the dates
+    for scheme in ["light", "dark"]:
+        ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme=scheme)
+        page = ctx.new_page()
+        page.goto(base + "/", wait_until="networkidle")
+        for sel in ["#experience .card", "#projects .card"]:
+            st = page.evaluate("s => { const c = getComputedStyle(document.querySelector(s)); return [c.borderLeftWidth, c.borderTopWidth, c.borderTopLeftRadius, c.boxShadow, c.borderTopColor]; }", sel)
+            ink = page.evaluate("() => getComputedStyle(document.querySelector('.name')).color")
+            check(f"{scheme} {sel}: even ink border, square corners", st[0] == st[1] and st[2] == "0px" and st[4] == ink, str(st))
+            check(f"{scheme} {sel}: offset shadow", "5px 5px 0px" in st[3], st[3])
+        ctx.close()
+
     # Desktop interactions
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
     page = ctx.new_page()
