@@ -225,15 +225,16 @@ section:last-child { min-height: 75vh; }
 .pubs-box > summary { display: flex; align-items: baseline; gap: .5rem; cursor: pointer; list-style: none; width: fit-content; }
 .pubs-box > summary::-webkit-details-marker { display: none; }
 .pubs-box > summary::before {
-  content: ""; width: .5em; height: .5em; flex: none; align-self: center;
-  border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
-  transform: rotate(-45deg); transition: transform .2s ease;
+  content: "+"; width: 1em; flex: none; text-align: center;
+  font-size: 1.35em; font-weight: 400; line-height: 1; color: var(--accent);
+  transition: transform .2s ease;
 }
+/* The plus turns a quarter-diagonal into an x when open. */
 .pubs-box[open] > summary::before { transform: rotate(45deg); }
 .pubs-box > summary:hover { color: var(--accent); }
-.pubs-box .count { font-weight: 400; color: var(--muted); }
 .pubs { padding-left: 1.25rem; margin: 0; }
-.pub { margin-bottom: .9rem; }
+.pub { padding: .8rem 0; }
+.pub + .pub { border-top: 1.5px dotted var(--pink-edge); }
 .pub-links { display: inline-flex; gap: .75rem; margin-left: .25rem; font-weight: 600; }
 .card-action { margin-top: 1rem; }
 

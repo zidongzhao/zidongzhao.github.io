@@ -199,7 +199,7 @@ def test_copy():
     nova = cards[1] if len(cards) == 4 else ""
     title = re.search(r"<h3[^>]*>(.*?)</h3>", nova, re.S)
     check("HelloNova title is not a link", bool(title) and "<a " not in title.group(1))
-    check("HelloNova linked from body text", re.search(r'<p>[^<]*<a href="https://www.thenovaland.com/">', nova) is not None)
+    check("HelloNova linked from body text", re.search(r'<p>[^<]*<a href="https://www.thenovaland.com/"[^>]*>', nova) is not None)
     paras = re.findall(r"<p[^>]*>(.*?)</p>", section("academics"), re.S)
     check("Academics opens with 'In a previous life'", bool(paras) and "In a previous life" in paras[0])
     check("no posters in Academics", "poster" not in section("academics").lower())
@@ -247,8 +247,13 @@ RESUME = "assets/Zidong-Zhao-Resume.pdf"
 
 def test_projects():
     proj = section("projects")
-    pubs_box = re.search(r"<details([^>]*)>\s*<summary[^>]*>[^<]*Academic publications.*?</summary>\s*<ol class=\"pubs\">", proj, re.S)
+    pubs_box = re.search(r"<details([^>]*)>\s*<summary[^>]*>(.*?)</summary>\s*<ol class=\"pubs\">", proj, re.S)
     check("publications in a dropdown, collapsed by default", bool(pubs_box) and "open" not in pubs_box.group(1))
+    check("dropdown title has no count", bool(pubs_box) and pubs_box.group(2).strip() == "Academic publications",
+          pubs_box.group(2) if pubs_box else "")
+    c = css()
+    check("dropdown icon is + turning into x", re.search(r'summary::before\s*\{[^}]*content:\s*"\+"', c) is not None
+          and re.search(r"\[open\]\s*>\s*summary::before\s*\{[^}]*rotate\(45deg\)", c) is not None)
     card = re.search(r'<article class="card[^"]*"[^>]*>(.*?)</article>', proj, re.S)
     body = card.group(1) if card else ""
     btns = [a for n, a in tags(body) if n == "button"]
@@ -342,6 +347,12 @@ def test_redirects():
 
 
 def test_links():
+    # Links to other sites and paper PDFs open in a new tab; rel=noopener stops the new page from controlling this one.
+    # The resume button downloads instead, so it is exempt.
+    same_tab = [a.get("href") for n, a in tags(index()) if n == "a" and "download" not in a
+                and re.match(r"^https?:|.*\.pdf(#|$)", a.get("href", ""))
+                and not (a.get("target") == "_blank" and "noopener" in a.get("rel", ""))]
+    check("outbound and PDF links open in a new tab", not same_tab, ", ".join(same_tab[:4]))
     broken, into_archive = [], []
     for p in served_files():
         if p.suffix != ".html":

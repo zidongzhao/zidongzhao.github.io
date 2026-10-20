@@ -170,6 +170,8 @@ with sync_playwright() as p:
     if has_box:
         page.click("#projects details summary")
         check("publications open on click", page.is_visible("#projects .pubs"))
+        seps = page.evaluate("() => [...document.querySelectorAll('#projects .pub')].map(e => getComputedStyle(e).borderTopStyle)")
+        check("dotted line between papers", seps[0] == "none" and all(s == "dotted" for s in seps[1:]), str(seps))
         page.focus("#projects details summary"); page.keyboard.press("Enter")
         check("publications close with Enter", not page.is_visible("#projects .pubs"))
     ctx.close()
