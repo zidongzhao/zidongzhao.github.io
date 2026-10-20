@@ -32,6 +32,7 @@ Visitor lands, reads the About, scans Experience, then either opens the portfoli
 Light mode:
 - Page background: light sage `#eef6f0`
 - Highlights (title, section labels, links): forest green `#3d7a48`
+- Background texture: sparse recycled-paper flecks (tiny ink specks plus medium pink flecks), inline SVG noise in two layers; 70% strength in light mode, 50% in dark. Pinned section labels carry the same texture.
 - Decorations (sidebar divider, card edges, active nav item, link hover sweep): pink, `#f9d9e8` divider, `#f6d3e3` card border, `#f2b8d2` card left edge, `#fbe3ef` soft fill
 - Cards: `#fffafd`; ink `#1f2a22`; muted `#5a675e`
 - Fonts: see Type below

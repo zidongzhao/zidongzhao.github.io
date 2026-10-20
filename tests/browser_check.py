@@ -76,6 +76,20 @@ with sync_playwright() as p:
         check(f"{w}px: current section header pinned at top", abs(top) < 2, f"top={top:.0f}")
         ctx.close()
 
+    # Paper texture: on the page in both modes, and repeated on pinned labels so they don't read as flat bands
+    paper = {}
+    for scheme in ["light", "dark"]:
+        ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme=scheme)
+        page = ctx.new_page()
+        page.goto(base + "/", wait_until="networkidle")
+        style = "s => { const c = getComputedStyle(document.querySelector(s)); return [c.backgroundImage, c.backgroundAttachment]; }"
+        body, lab = page.evaluate(style, "body"), page.evaluate(style, "#experience .label")
+        paper[scheme] = body[0]
+        check(f"{scheme}: paper texture on page", "svg" in body[0] and body[1].startswith("fixed"), body[1])
+        check(f"{scheme}: pinned label carries the same texture", lab == body, lab[1])
+        ctx.close()
+    check("dark mode has its own, softer texture", paper["light"] != paper["dark"])
+
     # Desktop interactions
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
     page = ctx.new_page()

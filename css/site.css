@@ -11,6 +11,8 @@
   --pink-border: #f6d3e3;
   --pink-edge: #f2b8d2;
   --pink-soft: #fbe3ef;
+  /* Recycled-paper flecks: inline SVG noise, two layers with co-prime tile sizes so no repeat shows. */
+  --paper: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27211%27%20height%3D%27211%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.95%27%20numOctaves%3D%272%27%20seed%3D%273%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%200.122%20%200%200%200%200%200.165%20%200%200%200%200%200.133%20%2040%200%200%200%20-33.40%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.21%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27317%27%20height%3D%27317%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.26%27%20numOctaves%3D%272%27%20seed%3D%2711%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%200.906%20%200%200%200%200%200.639%20%200%200%200%200%200.765%20%2040%200%200%200%20-32.20%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.595%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E");
 
   --serif: Newsreader, Georgia, "Times New Roman", serif;
   --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -31,6 +33,8 @@
     --pink-border: #33463a;
     --pink-edge: #d98fb0;
     --pink-soft: #4a2e3c;
+    /* Softer than light mode: pale specks on dark green read much louder. */
+    --paper: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27211%27%20height%3D%27211%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.95%27%20numOctaves%3D%272%27%20seed%3D%273%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%201.000%20%200%200%200%200%201.000%20%200%200%200%200%201.000%20%2040%200%200%200%20-33.40%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.08%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27317%27%20height%3D%27317%27%3E%3Cfilter%20id%3D%27f%27%20x%3D%270%27%20y%3D%270%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.26%27%20numOctaves%3D%272%27%20seed%3D%2711%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%200.851%20%200%200%200%200%200.561%20%200%200%200%200%200.690%20%2040%200%200%200%20-32.20%27/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%27linear%27%20slope%3D%270.3%27/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27/%3E%3C/svg%3E");
   }
 }
 
@@ -39,7 +43,7 @@
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--bg); background-image: var(--paper); background-attachment: fixed;
   color: var(--body);
   font-family: var(--sans);
   /* Plex's lowercase height; a fallback font is scaled to match so nothing jumps while fonts load. */
@@ -113,11 +117,13 @@ section:last-child { min-height: 75vh; }
 .focus { list-style: none; padding: 0; margin: .5rem 0 0; font-size: .95rem; line-height: 1.5; color: var(--muted); }
 .focus li { display: inline; white-space: nowrap; }
 .focus li:not(:last-child)::after { content: " ·"; }
-/* Pinned while its section is on screen, so the reader always sees where they are. */
+/* Pinned while its section is on screen, so the reader always sees where they are.
+   Same fixed paper as the page, so the pinned band blends in. */
 .label {
+  background-color: var(--bg); background-image: var(--paper); background-attachment: fixed;
   font-size: 1.0625rem; font-weight: 600; line-height: 1.2; letter-spacing: .12em; text-transform: uppercase;
   color: var(--accent); margin-bottom: .5rem;
-  position: sticky; top: 0; z-index: 2; background: var(--bg); padding: .9rem 0 .75rem;
+  position: sticky; top: 0; z-index: 2; padding: .9rem 0 .75rem;
 }
 .lead {
   font-family: var(--serif); font-weight: 500; font-size: 1.25rem; line-height: 1.35;
