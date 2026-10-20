@@ -113,9 +113,10 @@ def test_fonts():
     links = [a.get("href", "") for n, a in tags(index()) if n == "link" and "fonts.googleapis.com/css2" in a.get("href", "")]
     main = [h for h in links if "Newsreader" in h and "IBM+Plex+Sans" in h and "display=swap" in h]
     check("Google Fonts link for Newsreader + Plex", len(main) == 1, str(links))
-    cjk = [h for h in links if "Noto+Serif+SC" in h]
+    cjk = [h for h in links if "Long+Cang" in h]
     text = unquote(parse_qs(urlparse(cjk[0].replace("&amp;", "&")).query).get("text", [""])[0]) if cjk else ""
-    check("Noto Serif SC limited to 赵紫东", text == "赵紫东", text)
+    check("Long Cang limited to 赵紫东", text == "赵紫东", text)
+    check("Chinese name uses Long Cang", re.search(r"--cjk:\s*\"Long Cang\"", css()) is not None)
     c = css()
     check("serif fallback Georgia", re.search(r"Newsreader[^;]*Georgia", c) is not None)
     check("sans fallback system-ui", re.search(r"IBM Plex Sans[^;]*system-ui", c) is not None)

@@ -48,7 +48,7 @@ Contrast for body text and links must meet WCAG AA in both modes; adjust shades 
 Fonts, all from Google Fonts with `display=swap`:
 - **Serif: Newsreader**, weight 500, plus 400 italic. Used only for the name and the About positioning line (italic 400 also for journal names in Publications).
 - **Sans: IBM Plex Sans**, weights 400, 500, 600. Everything else: sidebar text, section labels, body, cards, buttons.
-- **Chinese name: Noto Serif SC**, weight 400, loaded with `&text=赵紫东` so only those three glyphs download.
+- **Chinese name: Long Cang** (casual handwriting, fallback Kaiti), weight 400, loaded with `&text=赵紫东` so only those three glyphs download.
 - Fallbacks: `Newsreader, Georgia, serif` and `"IBM Plex Sans", system-ui, -apple-system, sans-serif`. Apply `font-size-adjust` on the sans stack so a fallback font keeps the same lowercase height and the layout doesn't shift while fonts load.
 
 Scale (rem at a 16px root; desktop / phone):
@@ -56,7 +56,7 @@ Scale (rem at a 16px root; desktop / phone):
 | Role | Font | Size | Weight | Line height |
 |---|---|---|---|---|
 | Name (sidebar or phone header) | Newsreader | 2.5 / 2 | 500 | 1.05 |
-| 赵紫东 | Noto Serif SC | 1.5 / 1.35 | 400 | 1.3 |
+| 赵紫东 | Long Cang | 1.75 / 1.4 | 400 | 1.3 |
 | Positioning line (About opener) | Newsreader | 1.5 / 1.25 | 500 | 1.35 |
 | Role title in sidebar | Plex | 0.95 | 600 | 1.4 |
 | Sidebar tagline, nav links | Plex | 0.95 | 400 / 500 | 1.5 |
