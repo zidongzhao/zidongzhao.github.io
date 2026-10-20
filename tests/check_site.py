@@ -175,7 +175,7 @@ def visible_text(html: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
 
 
-POSITIONING = "Bridging human behavior and complex technical systems, turning experience into measurable signals and product decisions."
+POSITIONING = "I study how people interact with complex technology, and turn what I learn into metrics and product decisions."
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}")
 FOCUS = ["UX Research", "Product Data Science", "Behavioral Insights"]
 PHONE_RE =re.compile(r"\(?\b\d{3}\)?[ .-]?\d{3}[ .-]?\d{4}\b")
@@ -219,7 +219,7 @@ def test_copy():
     # Search snippet follows the sidebar: the three focus areas, no fixed job title, short enough not to be cut off.
     check("meta description matches the focus line", "quantitative UX researcher" not in desc.lower().replace("ux", "UX")
           and all(f.lower() in desc.lower() for f in FOCUS) and len(desc) <= 160, f"{len(desc)} chars: {desc}")
-    check("About toolkit names DS skills", all(k in visible_text(section("about")) for k in ["A/B testing", "causal inference", "SQL"]))
+    check("About toolkit names DS skills", all(k in visible_text(section("about")) for k in ["experimentation", "causal inference", "machine learning"]))
 
 
 def _has_exif(data: bytes) -> bool:
