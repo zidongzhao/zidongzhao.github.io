@@ -25,7 +25,7 @@ Visitor lands, reads the About, scans Experience, then either opens the portfoli
 5. **Academics.** One short paragraph each on the Princeton and Vanderbilt work, condensed from the current `research.html` and homepage. Collaborators as one line of linked names (links from `collaborators.html`). Mentors named on the old homepage (Diana Tamir, Tom Griffiths, Laurie Santos, Bunmi Olatunji, Sohee Park) keep their links. No posters. Start the section with something like "In a previous life, I did experimental, computational, and neuroimaging work in psychology in academia" 
 6. **Contact.** Email shown as plain text "zhaozidong1993 at gmail dot com", with no `mailto:` link and no address in the HTML source in usable form. Social icons: LinkedIn, GitHub, Google Scholar.
 
-**Sidebar (desktop):** pinned left. Name in serif ("Zidong Zhao"), 赵紫东, "Quantitative UX Researcher", a muted focus line in place of a tagline: "UX Research · Product Data Science · Behavioral Insights" (high level; toolkit details live in About), section links, social icons. **Phone width:** the sidebar becomes a top header with a compact menu; no horizontal scroll.
+**Sidebar (desktop):** pinned left. Name in serif ("Zidong Zhao"), 赵紫东, "Quantitative UX Researcher", a muted focus line in place of a tagline: "UX Research · Product Data Science · Behavioral Insights" (high level; toolkit details live in About), section links, social icons. **Widths:** at 1100px and up the sidebar (300px) and reading column (70ch) keep their widths, and extra width becomes whitespace split 1 : 2 : 6 (left margin, gap, right margin). From 700 to 1099px a narrower 240px sidebar stays beside the content. Under 700px the sidebar becomes a compact top header: 赵紫东 beside the name, then title and focus line, then Menu and icons on one row, with the menu opening below. No horizontal scroll at any width.
 
 ## Visual system (decided in mockups)
 
@@ -55,7 +55,7 @@ Scale (rem at a 16px root; desktop / phone):
 
 | Role | Font | Size | Weight | Line height |
 |---|---|---|---|---|
-| Name (sidebar or phone header) | Newsreader | 2.5 / 2 | 500 | 1.05 |
+| Name (sidebar or phone header) | Newsreader | 2.5 (2 under 1100px) / 2 | 500 | 1.05 |
 | 赵紫东 | Long Cang | 1.75 / 1.4 | 400 | 1.3 |
 | Positioning line (About opener) | Newsreader | 1.5 / 1.25 | 500 | 1.35 |
 | Role title in sidebar | Plex | 0.95 | 600 | 1.4 |

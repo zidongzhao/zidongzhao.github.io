@@ -18,7 +18,7 @@ def check(name, ok, detail=""):
 with sync_playwright() as p:
     browser = p.chromium.launch()
     for scheme in ["light", "dark"]:
-        for w, h in [(1280, 900), (375, 800), (320, 700)]:
+        for w, h in [(1280, 900), (800, 1000), (375, 800), (320, 700)]:
             ctx = browser.new_context(viewport={"width": w, "height": h}, color_scheme=scheme)
             page = ctx.new_page()
             errors = []
@@ -31,6 +31,34 @@ with sync_playwright() as p:
             page.screenshot(path=str(out / f"{scheme}-{w}-top.png"))
             page.screenshot(path=str(out / f"{scheme}-{w}-full.png"), full_page=True)
             ctx.close()
+
+    # Layout across widths: SPEC.md "Layout"
+    rect = "s => { const r = document.querySelector(s).getBoundingClientRect(); return {l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height}; }"
+    ctx = browser.new_context(viewport={"width": 2560, "height": 1300})
+    page = ctx.new_page()
+    page.goto(base + "/", wait_until="networkidle")
+    sb, mn = page.evaluate(rect, ".sidebar"), page.evaluate(rect, "main")
+    left, gap, right = sb["l"], mn["l"] - sb["r"], 2560 - mn["r"]
+    check("2560px: whitespace left:gap:right is 1:2:6", left > 50 and abs(gap - 2 * left) < 3 and abs(right - 6 * left) < 6,
+          f"{left:.0f}/{gap:.0f}/{right:.0f}")
+    sec = page.evaluate(rect, "#about")
+    check("2560px: reading column keeps its width", abs(mn["w"] - sec["w"]) < 2 and 600 < sec["w"] < 760, f"main={mn['w']:.0f} section={sec['w']:.0f}")
+    page.screenshot(path=str(out / "layout-2560.png"))
+    ctx.close()
+    ctx = browser.new_context(viewport={"width": 800, "height": 1000})
+    page = ctx.new_page()
+    page.goto(base + "/", wait_until="networkidle")
+    sb, mn = page.evaluate(rect, ".sidebar"), page.evaluate(rect, "main")
+    check("800px: sidebar beside content", sb["r"] <= mn["l"] + 1 and mn["t"] < 50, f"sidebar r={sb['r']:.0f} main l={mn['l']:.0f} t={mn['t']:.0f}")
+    ctx.close()
+    ctx = browser.new_context(viewport={"width": 375, "height": 800})
+    page = ctx.new_page()
+    page.goto(base + "/", wait_until="networkidle")
+    hd, nm, zh = page.evaluate(rect, ".sidebar"), page.evaluate(rect, ".name"), page.evaluate(rect, ".name-zh")
+    # About 40% shorter than the stacked header it replaced (318px).
+    check("375px: header at most 195px tall", hd["h"] <= 195, f"h={hd['h']:.0f}")
+    check("375px: 赵紫东 beside the name", zh["l"] > nm["r"] and zh["t"] < nm["b"], f"name r={nm['r']:.0f} zh l={zh['l']:.0f}")
+    ctx.close()
 
     # Desktop interactions
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
