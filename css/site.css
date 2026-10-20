@@ -103,9 +103,10 @@ section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
 section:last-child { min-height: 75vh; }
 
 /* Phones, including phones turned sideways (too short for the sidebar): identity, then Menu
-   and icons on one row; the open menu drops below them. Keep the phone and sidebar queries
-   in this file complementary: (max-width: 699px), (max-height: 499px) vs. (min-width: 700px) and (min-height: 500px). */
-@media (max-width: 699px), (max-height: 499px) {
+   and icons on one row; the open menu drops below them. The phone and sidebar queries in this file
+   are complementary; the .98 keeps fractional viewport sizes (zoom, odd pixel ratios) from matching neither:
+   (max-width: 699.98px), (max-height: 499.98px) vs. (min-width: 700px) and (min-height: 500px). */
+@media (max-width: 699.98px), (max-height: 499.98px) {
   .sidebar { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: .9rem 1rem; }
   .identity { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .6rem; }
   .identity .focus { flex-basis: 100%; margin-top: .35rem; }
@@ -120,7 +121,8 @@ section:last-child { min-height: 75vh; }
     background-color: var(--bg); background-image: var(--paper); background-attachment: fixed;
   }
   .js .label { top: var(--bar-h, 0px); }
-  .js section { scroll-margin-top: calc(var(--bar-h, 0px) + 1rem); }
+  /* Keeps link targets and keyboard focus from scrolling under the bar. */
+  .js:root { scroll-padding-top: var(--bar-h, 0px); }
 }
 /* Tablets: a narrower sidebar beside the content. */
 @media (min-width: 700px) and (min-height: 500px) {
@@ -174,22 +176,22 @@ section:last-child { min-height: 75vh; }
 .btn {
   display: inline-flex; align-items: center; gap: .4rem;
   font: 500 .9375rem/1 var(--sans);
-  padding: .7rem 1rem; border-radius: 8px;
+  padding: .7rem 1rem; min-height: 44px; border-radius: 8px;
   background: var(--accent); color: var(--bg); text-decoration: none; border: 0; cursor: pointer;
 }
 .btn[disabled], .btn[aria-disabled="true"] {
   background: transparent; color: var(--muted); border: 1.5px dashed var(--pink-edge); cursor: default;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 700px) and (min-height: 500px) {
   .name-zh { font-size: 1.5rem; }
   .lead { font-size: 1.5rem; }
 }
-@media (min-width: 1100px) {
+@media (min-width: 1100px) and (min-height: 500px) {
   .name { font-size: 2.5rem; }
   .name-zh { font-size: 1.75rem; }
 }
-@media (max-width: 699px) {
+@media (max-width: 699.98px), (max-height: 499.98px) {
   body { font-size: 1rem; }
 }
 
@@ -207,7 +209,7 @@ section:last-child { min-height: 75vh; }
   .site-nav a { border-left: 3px solid transparent; border-radius: 0 6px 6px 0; }
   .site-nav a[aria-current="true"] { border-left-color: var(--accent); }
 }
-@media (max-width: 699px), (max-height: 499px) {
+@media (max-width: 699.98px), (max-height: 499.98px) {
   .site-nav a { display: flex; align-items: center; min-height: 44px; }
 }
 .nav-toggle {
@@ -276,7 +278,7 @@ section:last-child { min-height: 75vh; }
 }
 
 /* Phone menu: collapsed only when JS is running, so it stays usable without JS */
-@media (max-width: 699px), (max-height: 499px) {
+@media (max-width: 699.98px), (max-height: 499.98px) {
   .js .nav-toggle { display: inline-block; }
   .js #site-nav:not(.open) { display: none; }
 }
@@ -297,7 +299,7 @@ section:last-child { min-height: 75vh; }
 /* Sidebar: the theme switch drops to a second row, under the first icon. */
 @media (min-width: 700px) and (min-height: 500px) { .social { display: grid; grid-template-columns: repeat(3, 40px); row-gap: 1rem; margin-top: 0; } }
 /* Phones: keep the header short by putting the switch in the icon row instead. */
-@media (max-width: 699px), (max-height: 499px) { .theme-toggle { order: -1; } }
+@media (max-width: 699.98px), (max-height: 499.98px) { .theme-toggle { order: -1; } }
 .social a {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
   color: var(--accent); background: var(--card); border: 1.5px solid var(--pink-edge);

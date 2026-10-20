@@ -320,15 +320,30 @@ with sync_playwright() as p:
         bar, lab = page.evaluate(rect, ".sidebar"), page.evaluate(rect, "#academics .label")
         check(f"{device}: menu link lands below the bar", not page.is_visible("#site-nav") and lab["t"] >= bar["b"] - 1
               and lab["t"] < bar["b"] + 100, f"label {lab['t']:.0f} bar {bar['b']:.0f}")
-        page.locator("#projects .fold > summary").scroll_into_view_if_needed()
+        page.locator("#projects .fold > summary").evaluate("e => e.scrollIntoView({block: 'center', behavior: 'instant'})")
         sizes["#projects .fold > summary"] = page.locator("#projects .fold > summary").evaluate(hit)
         page.tap("#projects .fold > summary")
         page.wait_for_timeout(200)
         check(f"{device}: publications open on tap", page.is_visible("#projects .pubs"))
-        page.locator(".pub-links a").first.scroll_into_view_if_needed()
+        page.locator(".pub-links a").first.evaluate("e => e.scrollIntoView({block: 'center', behavior: 'instant'})")
         sizes[".pub-links a"] = page.locator(".pub-links a").first.evaluate(hit)
+        page.locator("#resume .btn").evaluate("e => e.scrollIntoView({block: 'center', behavior: 'instant'})")
+        sizes["#resume .btn"] = page.locator("#resume .btn").evaluate(hit)
         for s, (w, h) in sizes.items():
             check(f"{device}: {s} tap target at least 44px", w >= 44 and h >= 44, f"{w}x{h}")
+        # Old URLs redirect to /#section, so a fresh load straight onto a section must clear the bar too.
+        page.goto(base + "/#academics", wait_until="networkidle")
+        page.wait_for_timeout(300)
+        bar, lab = page.evaluate(rect, ".sidebar"), page.evaluate(rect, "#academics .label")
+        check(f"{device}: loading /#academics lands below the bar", lab["t"] >= bar["b"] - 1 and lab["t"] < bar["b"] + 100,
+              f"label {lab['t']:.0f} bar {bar['b']:.0f}")
+        if device == "Pixel 7":
+            # Rotating with the menu open reflows the header; the bar must re-measure and stay on screen.
+            page.tap("#nav-toggle")
+            page.set_viewport_size({"width": 915, "height": 412})
+            page.wait_for_timeout(300)
+            tog = page.evaluate(rect, "#nav-toggle")
+            check(f"{device}: Menu stays on screen after rotating with the menu open", tog["t"] >= 0 and tog["b"] <= 80, f"toggle {tog}")
         ctx.close()
     engines["webkit"].close()
 

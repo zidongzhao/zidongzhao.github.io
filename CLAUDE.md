@@ -19,6 +19,6 @@ Zidong's personal website, served at https://zidongzhao.github.io. **Public**: e
 ## Gotchas
 
 - SPEC.md has been edited in the IDE and by Claude at the same time; the IDE save overwrote Claude's edits once. Re-read before editing.
-- Phone vs. sidebar layout is decided by two complementary media queries, `(max-width: 699px), (max-height: 499px)` and `(min-width: 700px) and (min-height: 500px)`. Change them together.
+- Phone vs. sidebar layout is decided by two complementary media queries, `(max-width: 699.98px), (max-height: 499.98px)` and `(min-width: 700px) and (min-height: 500px)`, used for layout and type sizes alike. Change them together; the .98 keeps fractional viewports from matching neither.
 - The sticky phone Menu bar depends on `--bar-hide` and `--bar-h`, measured in `js/site.js`. Without JS the header just scrolls away.
 - Zidong tests on Android only; iOS is covered by Playwright WebKit alone.

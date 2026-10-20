@@ -25,18 +25,21 @@ function initMenu() {
 function initStickyBar() {
   const header = document.querySelector('.sidebar');
   const identity = document.querySelector('.identity');
-  const nav = document.getElementById('site-nav');
-  if (!header || !identity || !nav) return;
+  const row = [document.getElementById('nav-toggle'), document.querySelector('.social')];
+  if (!header || !identity || row.includes(null)) return;
 
   const root = document.documentElement;
   const measure = () => {
-    // The open menu adds to the header; keep the closed-bar numbers.
-    if (nav.classList.contains('open')) return;
-    const h = header.getBoundingClientRect();
-    const hide = Math.max(0, identity.getBoundingClientRect().bottom - h.top);
-    root.style.setProperty('--bar-hide', `${hide}px`);
-    root.style.setProperty('--bar-h', `${h.height - hide}px`);
+    const h = header.getBoundingClientRect(), cs = getComputedStyle(header);
+    const top = identity.getBoundingClientRect().bottom;
+    // Measured from the Menu row rather than the header's bottom, so the open menu doesn't count.
+    const rowBottom = Math.max(...row.map((el) => el.getBoundingClientRect().bottom));
+    root.style.setProperty('--bar-hide', `${Math.max(0, top - h.top)}px`);
+    root.style.setProperty('--bar-h', `${rowBottom - top + parseFloat(cs.paddingBottom) + parseFloat(cs.borderBottomWidth)}px`);
   };
+  // Measure now too: the observer's first call comes after layout, which can be after the
+  // browser has already scrolled to a #section in the URL.
+  measure();
   new ResizeObserver(measure).observe(header);
 }
 
