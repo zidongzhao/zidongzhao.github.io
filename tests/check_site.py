@@ -46,8 +46,8 @@ def test_archive():
     pages = [p for p in (ROOT / "old-site").rglob("*.html") if p.name != "google60a4458eb7076ec4.html"]
     missing = [str(p.relative_to(ROOT)) for p in pages if '<meta name="robots" content="noindex">' not in p.read_text(errors="replace")]
     check("archive pages are noindex", bool(pages) and not missing, ", ".join(missing[:5]))
-    # Zidong asked for this order screenshot (address, card digits) to be removed from the public repo.
-    check("order screenshot removed", not list(ROOT.rglob("maxkare.png")))
+    # Zidong asked for this personal image to be removed from the public repo.
+    check("removed personal image stays gone", not list(ROOT.rglob("maxkare.png")))
     robots = (ROOT / "robots.txt").read_text() if (ROOT / "robots.txt").exists() else ""
     check("robots.txt disallows /old-site/", "Disallow: /old-site/" in robots.splitlines())
 
