@@ -2,6 +2,7 @@
 # dependencies = ["playwright"]
 # ///
 """Browser checks for SPEC.md's end-to-end list. Usage: browser_check.py BASE_URL OUT_DIR"""
+import re
 import sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -80,7 +81,12 @@ with sync_playwright() as p:
     b = card.bounding_box()
     page.mouse.move(b["x"] + b["width"] * 0.9, b["y"] + b["height"] * 0.2)
     page.wait_for_timeout(300)
-    check("card tilts toward cursor", "rotate" in (card.evaluate("e => e.style.transform") or ""))
+    tf = card.evaluate("e => e.style.transform") or ""
+    rot = {k: float(v) for k, v in re.findall(r"rotate([XY])\((-?[\d.]+)deg\)", tf)}
+    # Cursor is right of and above center. In CSS, negative rotateY brings the right edge forward
+    # and negative rotateX brings the top edge forward.
+    check("card tilts toward cursor", rot.get("Y", 0) < 0 and rot.get("X", 0) < 0, tf)
+    check("card tilt is gentle", rot and max(abs(v) for v in rot.values()) <= 2.5, tf)
     page.screenshot(path=str(out / "hover-card.png"))
     icon = page.locator(".social a").first
     icon.hover(); page.wait_for_timeout(400)

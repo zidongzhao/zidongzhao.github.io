@@ -191,6 +191,10 @@ def test_copy():
     orgs = ["Instagram", "HelloNova", "Yale", "Princeton"]
     check("four experience cards", len(cards) == 4, str(len(cards)))
     check("experience order", len(cards) == 4 and all(o in visible_text(c) for o, c in zip(orgs, cards)))
+    nova = cards[1] if len(cards) == 4 else ""
+    title = re.search(r"<h3[^>]*>(.*?)</h3>", nova, re.S)
+    check("HelloNova title is not a link", bool(title) and "<a " not in title.group(1))
+    check("HelloNova linked from body text", re.search(r'<p>[^<]*<a href="https://www.thenovaland.com/">', nova) is not None)
     paras = re.findall(r"<p[^>]*>(.*?)</p>", section("academics"), re.S)
     check("Academics opens with 'In a previous life'", bool(paras) and "In a previous life" in paras[0])
     check("no posters in Academics", "poster" not in section("academics").lower())

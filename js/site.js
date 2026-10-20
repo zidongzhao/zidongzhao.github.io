@@ -43,13 +43,14 @@ function initTilt() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!finePointer || reducedMotion) return;
 
-  const maxDeg = 5;
+  const maxDeg = 2;
   document.querySelectorAll('#experience .card').forEach((card) => {
     card.addEventListener('pointermove', (e) => {
       const r = card.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width - 0.5;
       const y = (e.clientY - r.top) / r.height - 0.5;
-      card.style.transform = `perspective(600px) rotateY(${x * maxDeg * 2}deg) rotateX(${-y * maxDeg * 2}deg)`;
+      // Signs make the edge nearest the cursor lift toward the viewer.
+      card.style.transform = `perspective(600px) rotateY(${-x * maxDeg * 2}deg) rotateX(${y * maxDeg * 2}deg)`;
     });
     card.addEventListener('pointerleave', () => { card.style.transform = ''; });
   });
