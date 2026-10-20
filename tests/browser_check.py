@@ -42,6 +42,10 @@ with sync_playwright() as p:
     top = page.evaluate("document.getElementById('academics').getBoundingClientRect().top")
     check("nav click scrolls to section", -5 < top < 120, f"top={top}")
     check("active nav follows scroll", page.get_attribute('#site-nav a[href="#academics"]', "aria-current") == "true")
+    # Contact is short and never reaches the observer band, so it needs its own case.
+    page.click('#site-nav a[href="#contact"]')
+    page.wait_for_timeout(1200)
+    check("active nav marks Contact at page end", page.get_attribute('#site-nav a[href="#contact"]', "aria-current") == "true")
     page.goto(base + "/#experience", wait_until="networkidle")
     card = page.locator("#experience .card").first
     card.scroll_into_view_if_needed()
@@ -97,6 +101,13 @@ with sync_playwright() as p:
     check("no JS: nav visible", page.is_visible("#site-nav"))
     check("no JS: toggle hidden", not page.is_visible("#nav-toggle"))
     ctx.close()
+    ctx = browser.new_context(viewport={"width": 375, "height": 800})
+    page = ctx.new_page()
+    page.route("**/js/site.js", lambda r: r.abort())
+    page.goto(base + "/")
+    page.wait_for_timeout(300)
+    check("site.js blocked: nav visible", page.is_visible("#site-nav"))
+    ctx.close()
 
     # Old URLs and DOIs
     ctx = browser.new_context()
@@ -111,7 +122,7 @@ with sync_playwright() as p:
             r = page.request.get(f"https://doi.org/api/handles/{doi}")
             check(f"DOI {doi} resolves", r.ok and '"responseCode":1' in r.text().replace(" ", ""))
     for pdf in ["ZhaoSenedTamir2023", "ZhaoThorntonTamir2020", "BBS2020_PredictiveSubstrate", "MeyerZhaoTamir2019", "OlatunjiBergZhao2017"]:
-        r = page.request.get(f"{base}/assets/papers/{pdf}.pdf")
+        r = page.request.get(f"{base}/files/{pdf}.pdf")
         check(f"paper {pdf} served", r.ok)
     for hidden in ["/SPEC.md", "/SOURCES.md", "/CLAUDE.md", "/tests/check_site.py"]:
         if "github.io" in base:

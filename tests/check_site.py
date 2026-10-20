@@ -246,15 +246,19 @@ def test_projects():
     check("five publications", len(pubs) == 5, str(len(pubs)))
     for i, pub in enumerate(pubs):
         hrefs = [a.get("href", "") for n, a in tags(pub) if n == "a"]
-        pdfs = [h for h in hrefs if h.startswith("assets/papers/")]
+        pdfs = [h for h in hrefs if h.startswith("files/")]
         dois = [h for h in hrefs if h.startswith("https://doi.org/")]
         check(f"pub {i + 1} has one existing PDF", len(pdfs) == 1 and (ROOT / pdfs[0].split("#")[0]).exists(), str(pdfs))
         check(f"pub {i + 1} has one DOI", len(dois) == 1, str(dois))
         check(f"pub {i + 1} journal italic", re.search(r"<(i|em)>", pub) is not None)
     for d in DOIS:
         check(f"DOI {d} linked", f"https://doi.org/{d}" in proj)
-    check("BBS opens at page 52", "assets/papers/BBS2020_PredictiveSubstrate.pdf#page=52" in proj)
-    check("Thornton opens at page 2", "assets/papers/ZhaoThorntonTamir2020.pdf#page=2" in proj)
+    check("BBS opens at page 52", "files/BBS2020_PredictiveSubstrate.pdf#page=52" in proj)
+    check("Thornton opens at page 2", "files/ZhaoThorntonTamir2020.pdf#page=2" in proj)
+    # Scholar and old CVs link straight to /files/<paper>.pdf; GitHub Pages cannot redirect PDFs.
+    for n in ["ZhaoSenedTamir2023", "ZhaoThorntonTamir2020", "BBS2020_PredictiveSubstrate", "MeyerZhaoTamir2019", "OlatunjiBergZhao2017"]:
+        check(f"old PDF URL files/{n}.pdf still served", (ROOT / "files" / f"{n}.pdf").exists())
+    check("old CV PDF not republished", not (ROOT / "files/CV_Zidong Zhao_041621.pdf").exists())
 
 
 def test_resume():
@@ -300,7 +304,8 @@ def test_interactions():
     check("tilt gated on reduced motion", "prefers-reduced-motion" in js)
     check("menu toggles aria-expanded", "aria-expanded" in js)
     check("active nav uses aria-current", "aria-current" in js and "IntersectionObserver" in js)
-    check("script loaded with defer", re.search(r'<script src="js/site.js" defer>', index()) is not None)
+    check("script loaded with defer", re.search(r'<script src="js/site.js" defer', index()) is not None)
+    check("failed site.js load restores the open menu", re.search(r'<script src="js/site.js" defer onerror="[^"]*classList\.remove\(\'js\'\)', index()) is not None)
 
 
 REDIRECTS = {

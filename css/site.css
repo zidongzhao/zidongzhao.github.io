@@ -66,6 +66,8 @@ a { color: var(--accent); }
 }
 main { padding: 0 1rem 4rem; }
 section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
+/* Lets the short last section scroll up into the active-nav band in js/site.js. */
+section:last-child { min-height: 75vh; }
 
 @media (min-width: 900px) {
   .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); }
