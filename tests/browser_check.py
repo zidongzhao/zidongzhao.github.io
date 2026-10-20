@@ -136,7 +136,10 @@ with sync_playwright() as p:
             st = page.evaluate("s => { const c = getComputedStyle(document.querySelector(s)); return [c.borderLeftWidth, c.borderTopWidth, c.borderTopLeftRadius, c.boxShadow, c.borderTopColor]; }", sel)
             ink = page.evaluate("() => getComputedStyle(document.querySelector('.name')).color")
             check(f"{scheme} {sel}: even ink border, square corners", st[0] == st[1] and st[2] == "0px" and st[4] == ink, str(st))
-            check(f"{scheme} {sel}: offset shadow", "5px 5px 0px" in st[3], st[3])
+            check(f"{scheme} {sel}: offset shadow", "7px 7px 0px" in st[3], st[3])
+        photo = page.evaluate("() => { const c = getComputedStyle(document.querySelector('.photo')); return [c.borderTopLeftRadius, c.boxShadow, c.borderTopColor, c.borderTopWidth]; }")
+        card = page.evaluate("() => { const c = getComputedStyle(document.querySelector('#experience .card')); return [c.boxShadow, c.borderTopColor, c.borderTopWidth]; }")
+        check(f"{scheme}: photo frame matches the card style", photo[0] == "0px" and photo[1:] == card, f"{photo} vs {card}")
         ctx.close()
 
     # Desktop interactions
