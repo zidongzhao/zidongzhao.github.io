@@ -140,7 +140,7 @@ A fresh reviewer (most capable model) read the whole branch against the spec and
 - **Deploy:** merge `revamp` into `master` and push, then rerun the checks on the live site. Needs Zidong's go-ahead.
 - **Git history:** decide whether to purge the file removed in `365b17e` from history. That needs a history rewrite and force-push.
 - **Later list (from SPEC.md):** page motion (sliding nav highlight, fade-up sections), the real portfolio URL in place of "Coming soon", personal projects, and moving to Astro only if projects grow into many pages.
-- **Copy:** approved for now; Zidong plans to workshop it.
+- **Next session (2026-10-21):** rework all copy substantially, and do a full mobile pass (real iOS Safari and Android, plus Safari rendering of the speck texture, are still untested).
 
 ## How to run and update
 
