@@ -247,6 +247,8 @@ RESUME = "assets/Zidong-Zhao-Resume.pdf"
 
 def test_projects():
     proj = section("projects")
+    pubs_box = re.search(r"<details([^>]*)>\s*<summary[^>]*>[^<]*Academic publications.*?</summary>\s*<ol class=\"pubs\">", proj, re.S)
+    check("publications in a dropdown, collapsed by default", bool(pubs_box) and "open" not in pubs_box.group(1))
     card = re.search(r'<article class="card[^"]*"[^>]*>(.*?)</article>', proj, re.S)
     body = card.group(1) if card else ""
     btns = [a for n, a in tags(body) if n == "button"]

@@ -161,6 +161,19 @@ with sync_playwright() as p:
         check(f"{w}px: ABOUT caps align with the name", abs(name - about) <= 1, f"name {name:.1f} about {about:.1f}")
         ctx.close()
 
+    # Publications dropdown: closed on load, opens on click, keyboard reachable
+    ctx = browser.new_context(viewport={"width": 1280, "height": 900})
+    page = ctx.new_page()
+    page.goto(base + "/#projects", wait_until="networkidle")
+    has_box = page.query_selector("#projects details summary") is not None
+    check("publications hidden on load", has_box and not page.is_visible("#projects .pubs"))
+    if has_box:
+        page.click("#projects details summary")
+        check("publications open on click", page.is_visible("#projects .pubs"))
+        page.focus("#projects details summary"); page.keyboard.press("Enter")
+        check("publications close with Enter", not page.is_visible("#projects .pubs"))
+    ctx.close()
+
     # Desktop interactions
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
     page = ctx.new_page()
