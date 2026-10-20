@@ -60,7 +60,7 @@ Scale (rem at a 16px root; desktop / phone):
 | Positioning line (About opener) | Newsreader | 1.5 / 1.25 | 500 | 1.35 |
 | Role title in sidebar | Plex | 0.95 | 600 | 1.4 |
 | Sidebar tagline, nav links | Plex | 0.95 | 400 / 500 | 1.5 |
-| Section label (ABOUT, EXPERIENCE...) | Plex, uppercase, 0.1em tracking | 0.75 | 600 | 1.2 |
+| Section label (ABOUT, EXPERIENCE...) | Plex, uppercase, 0.12em tracking | 1.0625 | 600 | 1.2 |
 | Body text | Plex | 1.0625 / 1.0 | 400 | 1.65 |
 | Card title (role and org) | Plex | 1.0625 | 600 | 1.4 |
 | Meta (dates, places) | Plex | 0.875 | 400 | 1.4 |
@@ -72,6 +72,7 @@ Body text lines stay under about 70 characters. Name and positioning line are th
 
 - Text links: pink highlight sweeps across on hover.
 - Social icons: playful tilt and grow on hover.
+- Section labels stay pinned at the top of the window while their section is on screen; the next label pushes the previous one off.
 - Experience and portfolio cards: tilt toward the cursor (the edge nearest it lifts forward), at most 2° per axis.
 - All of the above also respond to keyboard focus where it makes sense, and are off under `prefers-reduced-motion`. Card tilt is off on touch devices.
 

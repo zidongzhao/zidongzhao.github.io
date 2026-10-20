@@ -61,6 +61,21 @@ with sync_playwright() as p:
     check("375px: 赵紫东 beside the name", zh["l"] > nm["r"] and zh["t"] < nm["b"], f"name r={nm['r']:.0f} zh l={zh['l']:.0f}")
     ctx.close()
 
+    # Section headers: larger label that stays pinned while its section is on screen
+    for w, h in [(1280, 900), (375, 800)]:
+        ctx = browser.new_context(viewport={"width": w, "height": h})
+        page = ctx.new_page()
+        page.goto(base + "/", wait_until="networkidle")
+        label = page.locator("#experience .label")
+        check(f"{w}px: section label is 17px", label.evaluate("e => getComputedStyle(e).fontSize") == "17px",
+              label.evaluate("e => getComputedStyle(e).fontSize"))
+        sec = page.evaluate(rect, "#experience")
+        page.evaluate(f"window.scrollTo(0, {sec['t']} + window.scrollY + {sec['h']} / 2)")
+        page.wait_for_timeout(200)
+        top = page.evaluate(rect, "#experience .label")["t"]
+        check(f"{w}px: current section header pinned at top", abs(top) < 2, f"top={top:.0f}")
+        ctx.close()
+
     # Desktop interactions
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
     page = ctx.new_page()
