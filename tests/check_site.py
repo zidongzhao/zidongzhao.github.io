@@ -206,9 +206,19 @@ def test_copy():
     focus = re.search(r'<ul class="focus"[^>]*>(.*?)</ul>', index(), re.S)
     items = [visible_text(i).strip() for i in re.findall(r"<li>(.*?)</li>", focus.group(1), re.S)] if focus else []
     check("sidebar focus line", items == FOCUS, str(items))
+    sidebar = re.search(r'<header class="sidebar">(.*?)</header>', index(), re.S)
+    check("no job-title line in the sidebar", bool(sidebar) and 'class="role"' not in sidebar.group(1)
+          and "Quantitative UX Researcher" not in sidebar.group(1))
+    c = css()
+    rule = re.search(r"^\.focus\s*\{([^}]*)\}", c, re.M)
+    check("focus line takes the old title style", bool(rule) and "font-weight: 600" in rule.group(1)
+          and "color: var(--accent)" in rule.group(1), rule.group(1) if rule else "")
     check("old tagline removed", "Making human experience measurable" not in index())
     desc = next((a.get("content", "") for n, a in tags(index()) if n == "meta" and a.get("name") == "description"), "")
     check("meta description mentions product data science", "product data science" in desc)
+    # Search snippet follows the sidebar: the three focus areas, no fixed job title, short enough not to be cut off.
+    check("meta description matches the focus line", "quantitative UX researcher" not in desc.lower().replace("ux", "UX")
+          and all(f.lower() in desc.lower() for f in FOCUS) and len(desc) <= 160, f"{len(desc)} chars: {desc}")
     check("About toolkit names DS skills", all(k in visible_text(section("about")) for k in ["A/B testing", "causal inference", "SQL"]))
 
 

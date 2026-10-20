@@ -101,9 +101,7 @@ section:last-child { min-height: 75vh; }
 @media (max-width: 699px) {
   .sidebar { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: .9rem 1rem; }
   .identity { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .6rem; }
-  .identity .role, .identity .focus { flex-basis: 100%; }
-  .identity .role { margin-top: .35rem; }
-  .identity .focus { margin-top: .1rem; line-height: 1.4; }
+  .identity .focus { flex-basis: 100%; margin-top: .35rem; }
   .sidebar .nav-toggle { margin: 0; }
   .sidebar .social { margin: 0 0 0 auto; }
   .site-nav { order: 1; flex-basis: 100%; }
@@ -139,9 +137,8 @@ section:last-child { min-height: 75vh; }
   color: var(--ink); font-size-adjust: none;
 }
 .name-zh { font-family: var(--cjk); font-size: 1.4rem; line-height: 1.3; color: var(--muted); margin-top: .25rem; font-size-adjust: none; }
-.role { font-size: .95rem; font-weight: 600; line-height: 1.4; color: var(--accent); margin-top: .9rem; }
-/* Focus areas read as one muted line separated by middots. */
-.focus { list-style: none; padding: 0; margin: .5rem 0 0; font-size: .95rem; line-height: 1.5; color: var(--muted); }
+/* Focus areas stand in for a job title: one green line separated by middots. */
+.focus { list-style: none; padding: 0; margin: .9rem 0 0; font-size: .95rem; font-weight: 600; line-height: 1.4; color: var(--accent); }
 .focus li { display: inline; white-space: nowrap; }
 .focus li:not(:last-child)::after { content: " ·"; }
 /* Pinned while its section is on screen, so the reader always sees where they are.
