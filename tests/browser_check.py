@@ -73,7 +73,9 @@ with sync_playwright() as p:
         page.evaluate(f"window.scrollTo(0, {sec['t']} + window.scrollY + {sec['h']} / 2)")
         page.wait_for_timeout(200)
         top = page.evaluate(rect, "#experience .label")["t"]
-        check(f"{w}px: current section header pinned at top", abs(top) < 2, f"top={top:.0f}")
+        # On phones the label pins just under the sticky Menu bar.
+        under = page.evaluate(rect, ".sidebar")["b"] if w < 700 else 0
+        check(f"{w}px: current section header pinned at top", abs(top - under) < 2, f"top={top:.0f} bar={under:.0f}")
         ctx.close()
 
     # Paper texture: on the page in both modes, and repeated on pinned labels so they don't read as flat bands
@@ -262,6 +264,73 @@ with sync_playwright() as p:
     page.wait_for_timeout(300)
     check("site.js blocked: nav visible", page.is_visible("#site-nav"))
     ctx.close()
+
+    # Phones: real device profiles, WebKit standing in for iOS Safari, including landscape
+    # Tappable area around an element's center, probed with elementFromPoint so invisible hit areas count.
+    hit = """e => {
+      const r = e.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const hits = (x, y) => { const t = document.elementFromPoint(x, y); return !!t && (t === e || e.contains(t)); };
+      let w = 0, h = 0;
+      // Probe just inside the next candidate size, so a 40px box measures 40.
+      while (w < 60 && hits(cx - w / 2 - .5, cy) && hits(cx + w / 2 + .5, cy)) w += 2;
+      while (h < 60 && hits(cx, cy - h / 2 - .5) && hits(cx, cy + h / 2 + .5)) h += 2;
+      return [w, h];
+    }"""
+    engines = {"chromium": browser, "webkit": p.webkit.launch()}
+    for device in ["iPhone SE", "iPhone 15", "iPhone 15 landscape", "Pixel 7", "Pixel 7 landscape"]:
+        spec = p.devices[device]
+        ctx = engines[spec["default_browser_type"]].new_context(**{k: v for k, v in spec.items() if k != "default_browser_type"})
+        page = ctx.new_page()
+        errors = []
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.goto(base + "/", wait_until="networkidle")
+        vw = spec["viewport"]["width"]
+        sw = page.evaluate("document.documentElement.scrollWidth")
+        check(f"{device}: no horizontal scroll", sw <= vw, f"scrollWidth={sw}")
+        check(f"{device}: no script errors", not errors, "; ".join(errors[:3]))
+        check(f"{device}: phone header with Menu button", page.is_visible("#nav-toggle"))
+        check(f"{device}: no hover effects on touch", not page.evaluate("matchMedia('(hover: hover)').matches"))
+        icon = page.locator(".social a").first
+        icon.hover(); page.wait_for_timeout(400)
+        check(f"{device}: icon does not stay tilted after a tap", icon.evaluate("e => getComputedStyle(e).transform") == "none")
+        page.screenshot(path=str(out / f"device-{device.replace(' ', '-')}-top.png"))
+        if not page.is_visible("#nav-toggle"):
+            ctx.close()
+            continue
+
+        # Sticky Menu bar: still on screen mid-page, section labels pin below it, menu works from there
+        sec = page.evaluate(rect, "#experience")
+        page.evaluate(f"window.scrollTo(0, {sec['t']} + window.scrollY + {sec['h']} / 2)")
+        page.wait_for_timeout(300)
+        bar, tog = page.evaluate(rect, ".sidebar"), page.evaluate(rect, "#nav-toggle")
+        check(f"{device}: Menu bar stays on screen", tog["t"] >= 0 and tog["b"] <= 80 and page.is_visible("#nav-toggle"), f"toggle {tog}")
+        check(f"{device}: Menu bar is slim", 0 < bar["b"] <= 80, f"bar bottom={bar['b']:.0f}")
+        lab = page.evaluate(rect, "#experience .label")
+        check(f"{device}: section label pins just below the bar", abs(lab["t"] - bar["b"]) < 2, f"label {lab['t']:.0f} bar {bar['b']:.0f}")
+        page.screenshot(path=str(out / f"device-{device.replace(' ', '-')}-scrolled.png"))
+        page.tap("#nav-toggle")
+        page.wait_for_timeout(200)
+        nav = page.evaluate(rect, "#site-nav")
+        check(f"{device}: menu opens on screen mid-page", page.is_visible("#site-nav") and nav["t"] >= 0 and nav["b"] <= spec["viewport"]["height"],
+              f"nav {nav}")
+        page.screenshot(path=str(out / f"device-{device.replace(' ', '-')}-menu.png"))
+        sizes = {s: page.locator(s).first.evaluate(hit) for s in ["#nav-toggle", "#theme-toggle", ".social a", "#site-nav a"]}
+        page.tap('#site-nav a[href="#academics"]')
+        page.wait_for_timeout(1200)
+        bar, lab = page.evaluate(rect, ".sidebar"), page.evaluate(rect, "#academics .label")
+        check(f"{device}: menu link lands below the bar", not page.is_visible("#site-nav") and lab["t"] >= bar["b"] - 1
+              and lab["t"] < bar["b"] + 100, f"label {lab['t']:.0f} bar {bar['b']:.0f}")
+        page.locator("#projects .fold > summary").scroll_into_view_if_needed()
+        sizes["#projects .fold > summary"] = page.locator("#projects .fold > summary").evaluate(hit)
+        page.tap("#projects .fold > summary")
+        page.wait_for_timeout(200)
+        check(f"{device}: publications open on tap", page.is_visible("#projects .pubs"))
+        page.locator(".pub-links a").first.scroll_into_view_if_needed()
+        sizes[".pub-links a"] = page.locator(".pub-links a").first.evaluate(hit)
+        for s, (w, h) in sizes.items():
+            check(f"{device}: {s} tap target at least 44px", w >= 44 and h >= 44, f"{w}x{h}")
+        ctx.close()
+    engines["webkit"].close()
 
     # Old URLs and DOIs
     ctx = browser.new_context()

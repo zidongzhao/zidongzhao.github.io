@@ -20,6 +20,26 @@ function initMenu() {
   });
 }
 
+// Phones: css/site.css sticks the header with only its Menu row showing. It needs the height
+// of the name block above Menu (--bar-hide) and of the row that stays (--bar-h), which vary with wrapping.
+function initStickyBar() {
+  const header = document.querySelector('.sidebar');
+  const identity = document.querySelector('.identity');
+  const nav = document.getElementById('site-nav');
+  if (!header || !identity || !nav) return;
+
+  const root = document.documentElement;
+  const measure = () => {
+    // The open menu adds to the header; keep the closed-bar numbers.
+    if (nav.classList.contains('open')) return;
+    const h = header.getBoundingClientRect();
+    const hide = Math.max(0, identity.getBoundingClientRect().bottom - h.top);
+    root.style.setProperty('--bar-hide', `${hide}px`);
+    root.style.setProperty('--bar-h', `${h.height - hide}px`);
+  };
+  new ResizeObserver(measure).observe(header);
+}
+
 function initActiveNav() {
   const links = new Map(
     [...document.querySelectorAll('#site-nav a')].map((a) => [a.getAttribute('href').slice(1), a])
@@ -76,6 +96,7 @@ function initTheme() {
 }
 
 initMenu();
+initStickyBar();
 initActiveNav();
 initTilt();
 initTheme();

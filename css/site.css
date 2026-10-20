@@ -64,7 +64,12 @@
 
 /* Base */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Phones in landscape otherwise enlarge text on their own. */
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--pink-edge) 35%, transparent);
+}
 body {
   margin: 0;
   background-color: var(--bg); background-image: var(--paper); background-attachment: fixed;
@@ -97,8 +102,10 @@ section { padding-top: 3rem; scroll-margin-top: 1rem; max-width: 70ch; }
 /* Lets the short last section scroll up into the active-nav band in js/site.js. */
 section:last-child { min-height: 75vh; }
 
-/* Phones: identity, then Menu and icons on one row; the open menu drops below them. */
-@media (max-width: 699px) {
+/* Phones, including phones turned sideways (too short for the sidebar): identity, then Menu
+   and icons on one row; the open menu drops below them. Keep the phone and sidebar queries
+   in this file complementary: (max-width: 699px), (max-height: 499px) vs. (min-width: 700px) and (min-height: 500px). */
+@media (max-width: 699px), (max-height: 499px) {
   .sidebar { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: .9rem 1rem; }
   .identity { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .6rem; }
   .identity .focus { flex-basis: 100%; margin-top: .35rem; }
@@ -106,12 +113,21 @@ section:last-child { min-height: 75vh; }
   .sidebar .social { margin: 0 0 0 auto; }
   .site-nav { order: 1; flex-basis: 100%; }
   .site-nav ul { margin-top: 0; }
+  /* Sticky Menu bar: the header sticks with the rows above Menu pulled off the top of the screen.
+     js/site.js measures --bar-hide (those rows) and --bar-h (what stays visible). */
+  .js .sidebar {
+    position: sticky; top: calc(-1 * var(--bar-hide, 0px)); z-index: 3;
+    background-color: var(--bg); background-image: var(--paper); background-attachment: fixed;
+  }
+  .js .label { top: var(--bar-h, 0px); }
+  .js section { scroll-margin-top: calc(var(--bar-h, 0px) + 1rem); }
 }
 /* Tablets: a narrower sidebar beside the content. */
-@media (min-width: 700px) {
+@media (min-width: 700px) and (min-height: 500px) {
   .layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); }
   .sidebar {
-    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    /* dvh tracks mobile browser toolbars as they show and hide; vh is the fallback. */
+    position: sticky; top: 0; height: 100vh; height: 100dvh; overflow-y: auto;
     padding: 2.5rem 1.5rem;
     border-bottom: 0; border-right: 6px solid var(--pink-divider);
     display: flex; flex-direction: column; gap: 2rem;
@@ -124,7 +140,7 @@ section:last-child { min-height: 75vh; }
 }
 /* Wide screens: sidebar and reading column keep their widths, and the extra
    width becomes whitespace split 1:2:6 (left margin, gap, right margin). */
-@media (min-width: 1100px) {
+@media (min-width: 1100px) and (min-height: 500px) {
   .layout { grid-template-columns: minmax(0, 1fr) 300px minmax(3.5rem, 2fr) minmax(0, 70ch) minmax(3.5rem, 6fr); }
   .sidebar { grid-column: 2; padding: 3.5rem 2rem; }
   main { grid-column: 4; padding: 1rem 0 6rem; }
@@ -183,14 +199,19 @@ section:last-child { min-height: 75vh; }
   display: block; padding: .3rem .6rem; border-radius: 6px;
   font-size: .95rem; font-weight: 500; line-height: 1.5; color: var(--muted); text-decoration: none;
 }
-.site-nav a:hover, .site-nav a[aria-current="true"] { color: var(--ink); background: var(--pink-soft); }
-@media (min-width: 700px) {
+.site-nav a[aria-current="true"] { color: var(--ink); background: var(--pink-soft); }
+/* Hover styles only for mouse and trackpad: phones keep :hover on after a tap until the next one. */
+@media (hover: hover) { .site-nav a:hover { color: var(--ink); background: var(--pink-soft); } }
+@media (min-width: 700px) and (min-height: 500px) {
   .site-nav ul { flex-direction: column; margin-top: 0; }
   .site-nav a { border-left: 3px solid transparent; border-radius: 0 6px 6px 0; }
   .site-nav a[aria-current="true"] { border-left-color: var(--accent); }
 }
+@media (max-width: 699px), (max-height: 499px) {
+  .site-nav a { display: flex; align-items: center; min-height: 44px; }
+}
 .nav-toggle {
-  display: none;
+  display: none; min-height: 44px;
   margin-top: 1rem; font: 500 .9375rem/1 var(--sans); color: var(--ink);
   background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: .6rem .9rem; cursor: pointer;
 }
@@ -217,9 +238,10 @@ section:last-child { min-height: 75vh; }
 .card .card-title + p { margin-top: .5rem; }
 
 /* Projects and resume */
-.subhead { font-size: 1.0625rem; font-weight: 600; color: var(--ink); margin: 2rem 0 .75rem; }
-/* Publications and academic detail fold away by default; the native disclosure works without JS and from the keyboard. */
-.fold > summary { display: flex; align-items: baseline; gap: .5rem; cursor: pointer; list-style: none; width: fit-content; }
+.subhead { font-size: 1.0625rem; font-weight: 600; color: var(--ink); margin: 1.45rem 0 .2rem; }
+/* Publications and academic detail fold away by default; the native disclosure works without JS and from the keyboard.
+   The vertical padding makes a 44px tap target; .subhead margins are trimmed by the same amount. */
+.fold > summary { display: flex; align-items: baseline; gap: .5rem; padding: .55rem 0; cursor: pointer; list-style: none; width: fit-content; }
 .fold > summary::-webkit-details-marker { display: none; }
 .fold > summary::before {
   content: "+"; width: 1em; flex: none; text-align: center;
@@ -228,7 +250,7 @@ section:last-child { min-height: 75vh; }
 }
 /* The plus turns a quarter-diagonal into an x when open. */
 .fold[open] > summary::before { transform: rotate(45deg); }
-.fold > summary:hover { color: var(--accent); }
+@media (hover: hover) { .fold > summary:hover { color: var(--accent); } }
 .fold-body h3 { font-size: 1rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 .5rem; }
 .fold-body h3:first-child { margin-top: 0; }
 /* Same dotted divider as between publications, here between research themes. */
@@ -236,7 +258,13 @@ section:last-child { min-height: 75vh; }
 .pubs { padding-left: 1.25rem; margin: 0; }
 .pub { padding: .8rem 0; }
 .pub + .pub { border-top: 1.5px dotted var(--pink-edge); }
-.pub-links { display: inline-flex; gap: .75rem; margin-left: .25rem; font-weight: 600; }
+.pub-links { display: inline-flex; gap: 1rem; margin-left: .25rem; font-weight: 600; }
+/* Small controls get an invisible 44px tap area; how big they look stays the same. */
+.theme-toggle, .social a, .pub-links a { position: relative; }
+.theme-toggle::after, .social a::after, .pub-links a::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%);
+}
 .card-action { margin-top: 1rem; }
 
 /* Cards */
@@ -248,7 +276,7 @@ section:last-child { min-height: 75vh; }
 }
 
 /* Phone menu: collapsed only when JS is running, so it stays usable without JS */
-@media (max-width: 699px) {
+@media (max-width: 699px), (max-height: 499px) {
   .js .nav-toggle { display: inline-block; }
   .js #site-nav:not(.open) { display: none; }
 }
@@ -261,20 +289,22 @@ section:last-child { min-height: 75vh; }
   border-radius: 3px; padding: 0 .1em; margin: 0 -.1em;
   transition: background-size .35s ease;
 }
-.prose a:not(.btn):hover, .prose a:not(.btn):focus-visible { background-size: 100% 100%; }
+.prose a:not(.btn):focus-visible { background-size: 100% 100%; }
+@media (hover: hover) { .prose a:not(.btn):hover { background-size: 100% 100%; } }
 
 /* Social icons: playful tilt and grow */
 .social { display: flex; align-items: center; gap: .75rem; margin-top: 1rem; }
 /* Sidebar: the theme switch drops to a second row, under the first icon. */
-@media (min-width: 700px) { .social { display: grid; grid-template-columns: repeat(3, 40px); row-gap: 1rem; margin-top: 0; } }
+@media (min-width: 700px) and (min-height: 500px) { .social { display: grid; grid-template-columns: repeat(3, 40px); row-gap: 1rem; margin-top: 0; } }
 /* Phones: keep the header short by putting the switch in the icon row instead. */
-@media (max-width: 699px) { .theme-toggle { order: -1; } }
+@media (max-width: 699px), (max-height: 499px) { .theme-toggle { order: -1; } }
 .social a {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
   color: var(--accent); background: var(--card); border: 1.5px solid var(--pink-edge);
   transition: transform .25s ease, background-color .25s ease;
 }
-.social a:hover, .social a:focus-visible { transform: rotate(-10deg) scale(1.12); background: var(--pink-soft); }
+.social a:focus-visible { transform: rotate(-10deg) scale(1.12); background: var(--pink-soft); }
+@media (hover: hover) { .social a:hover { transform: rotate(-10deg) scale(1.12); background: var(--pink-soft); } }
 
 /* Theme switch: the knob slides under the icon of the active theme. Hidden until js/site.js wires it up. */
 .theme-toggle {
@@ -290,7 +320,7 @@ section:last-child { min-height: 75vh; }
 }
 .theme-toggle[aria-checked="true"] .knob { transform: translateX(18px); }
 .theme-toggle[aria-checked="false"] .sun, .theme-toggle[aria-checked="true"] .moon { color: var(--card); }
-.theme-toggle:hover { background: var(--pink-soft); }
+@media (hover: hover) { .theme-toggle:hover { background: var(--pink-soft); } }
 
 /* Experience cards tilt toward the cursor (js/site.js sets the transform) */
 /* The transparent outline and hidden backface make Chrome anti-alias the ink border while tilted. */
@@ -301,7 +331,7 @@ section:last-child { min-height: 75vh; }
 
 /* Keyboard focus */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-.btn:hover:not([disabled]) { filter: brightness(1.08); }
+@media (hover: hover) { .btn:hover:not([disabled]) { filter: brightness(1.08); } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
