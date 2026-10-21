@@ -4,6 +4,7 @@
 # ///
 """Checks every testable rule in SPEC.md. Run: uv run tests/check_site.py"""
 
+import json
 import re
 import sys
 from html.parser import HTMLParser
@@ -95,7 +96,7 @@ def test_structure():
     html = index()
     t = tags(html)
     check("html lang=en", any(n == "html" and a.get("lang") == "en" for n, a in t))
-    check("title is Zidong Zhao", re.search(r"<title>\s*Zidong Zhao\s*</title>", html) is not None)
+    check("title is name plus focus areas", re.search(r"<title>\s*Zidong Zhao · UX Research and Product Data Science\s*</title>", html) is not None)
     check("meta description", any(n == "meta" and a.get("name") == "description" and a.get("content") for n, a in t))
     ids = [a["id"] for n, a in t if n == "section" and "id" in a]
     check("six sections in order", ids == SECTION_IDS, str(ids))
@@ -163,6 +164,54 @@ def test_contrast():
 
 def test_analytics():
     check("GA tag present", "G-L9Q1GGPFNJ" in index())
+
+
+SITE = "https://zidongzhao.github.io/"
+PROFILES = ["https://www.linkedin.com/in/zidong-zhao-10076559/", "https://github.com/zidongzhao/",
+            "https://scholar.google.com/citations?user=AtnndQsAAAAJ"]
+
+
+def _jpeg_size(data: bytes) -> tuple[int, int] | None:
+    i = 2
+    while i + 9 <= len(data) and data[i] == 0xFF:
+        marker, length = data[i + 1], int.from_bytes(data[i + 2:i + 4], "big")
+        # SOF0 to SOF15 hold the frame size, except DHT (C4), JPG (C8), and DAC (CC).
+        if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC):
+            return int.from_bytes(data[i + 7:i + 9], "big"), int.from_bytes(data[i + 5:i + 7], "big")
+        i += 2 + length
+    return None
+
+
+def test_seo():
+    t = tags(index())
+    og = {a.get("property"): a.get("content", "") for n, a in t if n == "meta" and a.get("property")}
+    title = re.search(r"<title>(.*?)</title>", index(), re.S)
+    desc = next((a.get("content", "") for n, a in t if n == "meta" and a.get("name") == "description"), "")
+    # Link previews repeat the search title and snippet, so a copy edit in one place must reach the other.
+    check("og:title matches <title>", bool(title) and og.get("og:title") == title.group(1).strip())
+    check("og:description matches meta description", bool(desc) and og.get("og:description") == desc)
+    check("og:url is the canonical URL", og.get("og:url") == SITE)
+    img = og.get("og:image", "")
+    check("og:image is an absolute URL to a served file", img.startswith(SITE) and (ROOT / img.removeprefix(SITE)).exists(), img)
+    check("og:image has alt text", len(og.get("og:image:alt", "")) > 5)
+    check("twitter card is summary", any(n == "meta" and a.get("name") == "twitter:card" and a.get("content") == "summary" for n, a in t))
+    # Stale dimensions make previews crop wrongly after a photo swap.
+    f = ROOT / img.removeprefix(SITE) if img.startswith(SITE) else None
+    size = _jpeg_size(f.read_bytes()) if f and f.exists() else None
+    check("og:image dimensions match the file", size is not None
+          and (og.get("og:image:width"), og.get("og:image:height")) == tuple(map(str, size)), str(size))
+    blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', index(), re.S)
+    check("one JSON-LD block", len(blocks) == 1, str(len(blocks)))
+    try:
+        ld = json.loads(blocks[0]) if blocks else {}
+    except json.JSONDecodeError as e:
+        ld = {}
+        check("JSON-LD parses", False, str(e))
+    check("JSON-LD is a Person at the site URL", ld.get("@type") == "Person" and ld.get("name") == "Zidong Zhao" and ld.get("url") == SITE)
+    check("JSON-LD image matches og:image", bool(img) and ld.get("image") == img)
+    check("JSON-LD sameAs lists the three profiles", ld.get("sameAs") == PROFILES, str(ld.get("sameAs")))
+    # The fixed job title was dropped on purpose (953bc8c); structured data follows the page.
+    check("JSON-LD has no job title or employer", "jobTitle" not in ld and "worksFor" not in ld)
 
 
 def section(sid: str) -> str:
