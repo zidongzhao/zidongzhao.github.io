@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["playwright"]
+# dependencies = ["playwright", "pillow"]
 # ///
 """Builds assets/share-card.jpg, the link-preview image, from the page's own copy, photo, and colors.
 
@@ -10,6 +10,7 @@ The image carries a fingerprint of its inputs; tests/check_site.py fails when th
 
 import hashlib
 import html
+import io
 import re
 import sys
 from pathlib import Path
@@ -18,7 +19,8 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets/share-card.jpg"
 PHOTO = ROOT / "assets/photo.jpg"
 URL = "zidongzhao.github.io"
-TOKENS = ["--bg", "--ink", "--muted", "--accent", "--card-shadow", "--paper"]
+# No paper texture: LinkedIn re-encodes previews, and noise eats the bit budget and smears the text.
+TOKENS = ["--bg", "--ink", "--muted", "--accent", "--card-shadow"]
 STAMP = b"share-card "
 
 
@@ -66,7 +68,7 @@ html, body {{ margin: 0; }}
 body {{
   width: 1200px; height: 630px; box-sizing: border-box; padding: 0 96px; overflow: hidden;
   display: flex; align-items: center; gap: 72px;
-  background-color: {t["--bg"]}; background-image: {t["--paper"]}; color: {t["--ink"]};
+  background-color: {t["--bg"]}; color: {t["--ink"]};
 }}
 img {{ width: 380px; height: 380px; flex-shrink: 0; border: 2.5px solid {t["--ink"]}; box-shadow: 12px 12px 0 {t["--card-shadow"]}; }}
 #text {{ min-width: 0; }}
@@ -88,6 +90,7 @@ p {{ margin: 0; }}
 
 
 def main() -> None:
+    from PIL import Image
     from playwright.sync_api import sync_playwright
 
     page_file = OUT.with_suffix(".tmp.html")
@@ -95,7 +98,8 @@ def main() -> None:
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch()
-            page = browser.new_page(viewport={"width": 1200, "height": 630})
+            # Twice the 1200x630 minimum so LinkedIn scales down rather than up.
+            page = browser.new_page(viewport={"width": 1200, "height": 630}, device_scale_factor=2)
             page.goto(page_file.as_uri(), wait_until="networkidle")
             page.evaluate("document.fonts.ready")
             # Fallback fonts or text spilling past the card would ship silently, so stop instead.
@@ -105,13 +109,13 @@ def main() -> None:
                                 " return [r.top, r.bottom, r.left + t.scrollWidth]; })()")
             if missing or box[0] < 40 or box[1] > 590 or box[2] > 1160:
                 sys.exit(f"Share card not written. Missing fonts: {missing or 'none'}; text box top, bottom, right: {box}")
-            jpeg = page.screenshot(type="jpeg", quality=88)
+            png = page.screenshot(type="png")
             browser.close()
     finally:
         page_file.unlink(missing_ok=True)
-    comment = STAMP + fingerprint().encode()
-    segment = b"\xff\xfe" + (len(comment) + 2).to_bytes(2, "big") + comment
-    OUT.write_bytes(jpeg[:2] + segment + jpeg[2:])
+    # Full-resolution color (subsampling=0) keeps the green text crisp; the comment carries the fingerprint.
+    Image.open(io.BytesIO(png)).convert("RGB").save(
+        OUT, quality=92, subsampling=0, optimize=True, comment=STAMP + fingerprint().encode())
     print(f"Wrote {OUT.relative_to(ROOT)} ({OUT.stat().st_size // 1024} KB), fingerprint {fingerprint()}")
 
 
