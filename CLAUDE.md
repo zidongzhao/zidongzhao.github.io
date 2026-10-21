@@ -7,7 +7,9 @@ Zidong's personal website, served at https://zidongzhao.github.io. **Public**: e
 - Plain HTML, CSS, vanilla JS. No framework, no build step.
 - Run locally: `uv run python -m http.server 8000`, then open http://localhost:8000
 - Check: `uv run tests/check_site.py`; browser checks: `uv run tests/browser_check.py http://127.0.0.1:8000 /tmp/shots` (first time: `uv run --with playwright playwright install chromium webkit`). WebKit stands in for iOS Safari; it is close, not exact.
-- Deploy: merge into `master` and push; GitHub Pages publishes it. Ask Zidong first.
+- Test on a phone: `uv run python -m http.server 8000 --bind 0.0.0.0`, open `http://<Mac's Wi-Fi address>:8000` on a phone on the same Wi-Fi, stop the server afterward. Trusted home network only.
+- Deploy: merge into `master` and push; GitHub Pages publishes it. Ask Zidong first. Afterward, rerun the browser checks against https://zidongzhao.github.io.
+- History of the October 2026 revamp, checks, and open items: `docs/2026-10-19-revamp-record.md`.
 
 ## Decisions
 

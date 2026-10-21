@@ -41,7 +41,7 @@ Light mode:
 Dark mode follows the visitor's system setting by default. A sun/moon switch sits just below the LinkedIn icon in the sidebar (on phones, in the icon row left of LinkedIn); a choice made there is remembered in the browser and applied before first paint. Without JavaScript the switch is hidden and the system setting still applies. Dark tokens:
 - Background deep pine `#16201a`; cards `#1e2a23` with `#33463a` border
 - Highlights soft mint `#8fd19e`; decorations dusty rose `#d98fb0`, soft fill `#4a2e3c`, divider `#5a3a4a`
-- Ink `#eef6f0`; body `#c9d6cc`; muted `#7d8c82`
+- Ink `#eef6f0`; body `#c9d6cc`; muted `#87968c` (lightened from `#7d8c82` to pass AA)
 
 Contrast for body text and links must meet WCAG AA in both modes; adjust shades (not hues) if a pair fails.
 
