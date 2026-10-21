@@ -257,7 +257,11 @@ RESUME = "assets/Zidong-Zhao-Resume.pdf"
 
 def test_projects():
     proj = section("projects")
-    pubs_box = re.search(r"<details([^>]*)>\s*<summary[^>]*>(.*?)</summary>\s*<ol class=\"pubs\">", proj, re.S)
+    # Publications live at the end of Academics, after the "Read more" dropdown (Zidong, October 2026).
+    acad = section("academics")
+    check("no publications in Projects", "pubs" not in proj)
+    pubs_box = re.search(r"<details([^>]*)>\s*<summary[^>]*>([^<]*)</summary>\s*<ol class=\"pubs\">", acad, re.S)
+    check("publications dropdown follows Read more", acad.find("Read more about my academic work") < acad.find('class="pubs"'))
     check("publications in a dropdown, collapsed by default", bool(pubs_box) and "open" not in pubs_box.group(1))
     check("dropdown title has no count", bool(pubs_box) and pubs_box.group(2).strip() == "Academic publications",
           pubs_box.group(2) if pubs_box else "")
@@ -269,7 +273,7 @@ def test_projects():
     btns = [a for n, a in tags(body) if n == "button"]
     check("portfolio card has disabled Coming soon button",
           "Coming soon" in visible_text(body) and any("disabled" in a for a in btns) and "href" not in body)
-    pubs = re.findall(r'<li class="pub">(.*?)</li>', proj, re.S)
+    pubs = re.findall(r'<li class="pub">(.*?)</li>', acad, re.S)
     check("five publications", len(pubs) == 5, str(len(pubs)))
     for i, pub in enumerate(pubs):
         hrefs = [a.get("href", "") for n, a in tags(pub) if n == "a"]
@@ -279,9 +283,9 @@ def test_projects():
         check(f"pub {i + 1} has one DOI", len(dois) == 1, str(dois))
         check(f"pub {i + 1} journal italic", re.search(r"<(i|em)>", pub) is not None)
     for d in DOIS:
-        check(f"DOI {d} linked", f"https://doi.org/{d}" in proj)
-    check("BBS opens at page 52", "files/BBS2020_PredictiveSubstrate.pdf#page=52" in proj)
-    check("Thornton opens at page 2", "files/ZhaoThorntonTamir2020.pdf#page=2" in proj)
+        check(f"DOI {d} linked", f"https://doi.org/{d}" in acad)
+    check("BBS opens at page 52", "files/BBS2020_PredictiveSubstrate.pdf#page=52" in acad)
+    check("Thornton opens at page 2", "files/ZhaoThorntonTamir2020.pdf#page=2" in acad)
     # Scholar and old CVs link straight to /files/<paper>.pdf; GitHub Pages cannot redirect PDFs.
     for n in ["ZhaoSenedTamir2023", "ZhaoThorntonTamir2020", "BBS2020_PredictiveSubstrate", "MeyerZhaoTamir2019", "OlatunjiBergZhao2017"]:
         check(f"old PDF URL files/{n}.pdf still served", (ROOT / "files" / f"{n}.pdf").exists())
@@ -334,9 +338,9 @@ def test_interactions():
 
 
 REDIRECTS = {
-    "cv.html": "resume", "publications.html": "projects", "research.html": "academics",
+    "cv.html": "resume", "publications.html": "academics", "research.html": "academics",
     "collaborators.html": "academics", "contact.html": "contact",
-    **{f"publications/{n}.html": "projects" for n in [
+    **{f"publications/{n}.html": "academics" for n in [
         "ZhaoSenedTamir2023", "ZhaoThorntonTamir2020", "ZhaoMildnerTamir2020", "MeyerZhaoTamir2019",
         "OlatunjiBergZhao2017", "sans2019", "spsp2018", "spsp2019"]},
 }

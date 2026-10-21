@@ -166,16 +166,16 @@ with sync_playwright() as p:
     # Publications dropdown: closed on load, opens on click, keyboard reachable
     ctx = browser.new_context(viewport={"width": 1280, "height": 900})
     page = ctx.new_page()
-    page.goto(base + "/#projects", wait_until="networkidle")
-    has_box = page.query_selector("#projects details summary") is not None
-    check("publications hidden on load", has_box and not page.is_visible("#projects .pubs"))
+    page.goto(base + "/#academics", wait_until="networkidle")
+    has_box = page.query_selector("#academics .fold:has(.pubs) > summary") is not None
+    check("publications hidden on load", has_box and not page.is_visible("#academics .pubs"))
     if has_box:
-        page.click("#projects details summary")
-        check("publications open on click", page.is_visible("#projects .pubs"))
-        seps = page.evaluate("() => [...document.querySelectorAll('#projects .pub')].map(e => getComputedStyle(e).borderTopStyle)")
+        page.click("#academics .fold:has(.pubs) > summary")
+        check("publications open on click", page.is_visible("#academics .pubs"))
+        seps = page.evaluate("() => [...document.querySelectorAll('#academics .pub')].map(e => getComputedStyle(e).borderTopStyle)")
         check("dotted line between papers", seps[0] == "none" and all(s == "dotted" for s in seps[1:]), str(seps))
-        page.focus("#projects details summary"); page.keyboard.press("Enter")
-        check("publications close with Enter", not page.is_visible("#projects .pubs"))
+        page.focus("#academics .fold:has(.pubs) > summary"); page.keyboard.press("Enter")
+        check("publications close with Enter", not page.is_visible("#academics .pubs"))
     ctx.close()
 
     # Desktop interactions
@@ -320,11 +320,11 @@ with sync_playwright() as p:
         bar, lab = page.evaluate(rect, ".sidebar"), page.evaluate(rect, "#academics .label")
         check(f"{device}: menu link lands below the bar", not page.is_visible("#site-nav") and lab["t"] >= bar["b"] - 1
               and lab["t"] < bar["b"] + 100, f"label {lab['t']:.0f} bar {bar['b']:.0f}")
-        page.locator("#projects .fold > summary").evaluate("e => e.scrollIntoView({block: 'center', behavior: 'instant'})")
-        sizes["#projects .fold > summary"] = page.locator("#projects .fold > summary").evaluate(hit)
-        page.tap("#projects .fold > summary")
+        page.locator("#academics .fold:has(.pubs) > summary").evaluate("e => e.scrollIntoView({block: 'center', behavior: 'instant'})")
+        sizes["#academics .fold:has(.pubs) > summary"] = page.locator("#academics .fold:has(.pubs) > summary").evaluate(hit)
+        page.tap("#academics .fold:has(.pubs) > summary")
         page.wait_for_timeout(200)
-        check(f"{device}: publications open on tap", page.is_visible("#projects .pubs"))
+        check(f"{device}: publications open on tap", page.is_visible("#academics .pubs"))
         page.locator(".pub-links a").first.evaluate("e => e.scrollIntoView({block: 'center', behavior: 'instant'})")
         sizes[".pub-links a"] = page.locator(".pub-links a").first.evaluate(hit)
         page.locator("#resume .btn").evaluate("e => e.scrollIntoView({block: 'center', behavior: 'instant'})")
@@ -350,7 +350,7 @@ with sync_playwright() as p:
     # Old URLs and DOIs
     ctx = browser.new_context()
     page = ctx.new_page()
-    for old, sid in [("/cv.html", "resume"), ("/publications/ZhaoSenedTamir2023.html", "projects"), ("/research.html", "academics")]:
+    for old, sid in [("/cv.html", "resume"), ("/publications/ZhaoSenedTamir2023.html", "academics"), ("/research.html", "academics")]:
         page.goto(base + old)
         page.wait_for_url(f"**/#{sid}", timeout=5000)
         check(f"{old} lands on #{sid}", page.url.endswith(f"/#{sid}"), page.url)

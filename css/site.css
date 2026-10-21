@@ -252,6 +252,8 @@ section:last-child { min-height: 75vh; }
 }
 /* The plus turns a quarter-diagonal into an x when open. */
 .fold[open] > summary::before { transform: rotate(45deg); }
+/* Stacked dropdowns (end of Academics) read as one list. */
+.fold + .fold > summary { margin-top: 0; }
 @media (hover: hover) { .fold > summary:hover { color: var(--accent); } }
 .fold-body h3 { font-size: 1rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 .5rem; }
 .fold-body h3:first-child { margin-top: 0; }
