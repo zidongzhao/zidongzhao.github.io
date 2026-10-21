@@ -1,0 +1,8 @@
+#!/bin/sh
+# Blocks a commit when a site check fails, such as a share card left stale after a copy edit.
+# Checks the working tree, not just the staged files. Enable once per clone: git config core.hooksPath .githooks
+out=$(uv run tests/check_site.py 2>&1) || {
+  echo "$out" | grep FAIL
+  echo "Commit blocked by tests/check_site.py. A stale share card needs: uv run scripts/share_card.py"
+  exit 1
+}

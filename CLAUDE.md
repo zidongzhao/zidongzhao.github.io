@@ -9,6 +9,7 @@ Zidong's personal website, served at https://zidongzhao.github.io. **Public**: e
 - Check: `uv run tests/check_site.py`; browser checks: `uv run tests/browser_check.py http://127.0.0.1:8000 /tmp/shots` (first time: `uv run --with playwright playwright install chromium webkit`). WebKit stands in for iOS Safari; it is close, not exact.
 - Test on a phone: `uv run python -m http.server 8000 --bind 0.0.0.0`, open `http://<Mac's Wi-Fi address>:8000` on a phone on the same Wi-Fi, stop the server afterward. Trusted home network only.
 - Deploy: merge into `master` and push; GitHub Pages publishes it. Ask Zidong first. Afterward, rerun the browser checks against https://zidongzhao.github.io.
+- Share image: `uv run scripts/share_card.py` rebuilds `assets/share-card.jpg` (link preview). Rerun after changing the name, 赵紫东, the focus line, the photo, or the colors; `check_site.py` fails until you do, and the pre-commit hook in `.githooks/` runs it. On a fresh clone, enable the hook with `git config core.hooksPath .githooks`. After deploying a new card, re-inspect the URL in LinkedIn Post Inspector so LinkedIn drops its cached preview.
 - History of the October 2026 revamp, checks, and open items: `docs/2026-10-19-revamp-record.md`.
 
 ## Decisions

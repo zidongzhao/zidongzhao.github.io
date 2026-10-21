@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 # Never served: excluded by _config.yml, gitignored, or not part of the site.
-NOT_SERVED = {"old-site", "tests", "docs", ".git", ".superpowers", "SPEC.md", "SOURCES.md", "CLAUDE.md", "README.md", "_config.yml"}
+NOT_SERVED = {"old-site", "tests", "scripts", "docs", ".git", ".superpowers", "SPEC.md", "SOURCES.md", "CLAUDE.md", "README.md", "_config.yml"}
 TEXT_SUFFIXES = {".html", ".css", ".js", ".xml", ".txt", ".md", ".yml"}
 
 results: list[tuple[str, bool, str]] = []
@@ -59,7 +59,7 @@ def test_repo_hygiene():
     check(".gitignore covers .superpowers/", ".superpowers/" in gi)
     cfg = read("_config.yml") if (ROOT / "_config.yml").exists() else ""
     excluded = re.findall(r"^\s*-\s*(\S+)", cfg, re.M)
-    for name in ["SPEC.md", "SOURCES.md", "CLAUDE.md", "README.md", "docs", "tests"]:
+    for name in ["SPEC.md", "SOURCES.md", "CLAUDE.md", "README.md", "docs", "tests", "scripts"]:
         check(f"_config.yml excludes {name}", name in excluded)
     check("Search Console file at root", (ROOT / "google60a4458eb7076ec4.html").exists())
     dashed = [str(p.relative_to(ROOT)) for p in served_text_files() if "—" in p.read_text(errors="replace")]
@@ -194,7 +194,8 @@ def test_seo():
     img = og.get("og:image", "")
     check("og:image is an absolute URL to a served file", img.startswith(SITE) and (ROOT / img.removeprefix(SITE)).exists(), img)
     check("og:image has alt text", len(og.get("og:image:alt", "")) > 5)
-    check("twitter card is summary", any(n == "meta" and a.get("name") == "twitter:card" and a.get("content") == "summary" for n, a in t))
+    check("og:image is the wide share card", img == SITE + "assets/share-card.jpg", img)
+    check("twitter card is large image", any(n == "meta" and a.get("name") == "twitter:card" and a.get("content") == "summary_large_image" for n, a in t))
     # Stale dimensions make previews crop wrongly after a photo swap.
     f = ROOT / img.removeprefix(SITE) if img.startswith(SITE) else None
     size = _jpeg_size(f.read_bytes()) if f and f.exists() else None
@@ -208,10 +209,16 @@ def test_seo():
         ld = {}
         check("JSON-LD parses", False, str(e))
     check("JSON-LD is a Person at the site URL", ld.get("@type") == "Person" and ld.get("name") == "Zidong Zhao" and ld.get("url") == SITE)
-    check("JSON-LD image matches og:image", bool(img) and ld.get("image") == img)
+    check("JSON-LD image is the headshot", ld.get("image") == SITE + "assets/photo.jpg")
     check("JSON-LD sameAs lists the three profiles", ld.get("sameAs") == PROFILES, str(ld.get("sameAs")))
     # The fixed job title was dropped on purpose (953bc8c); structured data follows the page.
     check("JSON-LD has no job title or employer", "jobTitle" not in ld and "worksFor" not in ld)
+    # The card repeats the sidebar copy, photo, and colors; a change to any of them must rebuild it.
+    sys.path.insert(0, str(ROOT / "scripts"))
+    sys.dont_write_bytecode = True
+    import share_card
+    have, want = share_card.stamped(), share_card.fingerprint()
+    check("share card is up to date (else run: uv run scripts/share_card.py)", have == want, f"image {have}, inputs {want}")
 
 
 def section(sid: str) -> str:
