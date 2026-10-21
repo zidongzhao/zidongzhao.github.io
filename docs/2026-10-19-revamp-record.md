@@ -43,13 +43,13 @@ A single scrolling page with a pinned sidebar on desktop and a top header on pho
 |---|---|
 | `77e026b` | Move old site into `old-site/`; add noindex, robots.txt, `_config.yml` exclusions, check script, CLAUDE.md, README |
 | `6db2765` | Page skeleton, color tokens with dark mode, type system |
-| `365b17e` | Remove a personal image from the archive |
-| `a216006` | About, Experience, Academics, Contact copy; headshot |
-| `456557b` | Projects and Resume sections |
-| `0f6a5e9` | Hover effects, card tilt, phone menu, active nav, social icons |
-| `4def5a9` | Redirects for 13 old URLs; sitemap now lists only the home page |
-| `0ed756f` | Fixes from browser screenshots: sidebar wrapping, phone spacing, PDF fallback |
-| `ab62449` | Fixes from final review: Contact nav highlight, menu fallback if `site.js` fails, papers back at their old `/files/` URLs |
+| `d39c664` | Remove a personal image from the archive |
+| `f8228d9` | About, Experience, Academics, Contact copy; headshot |
+| `4c1fdc1` | Projects and Resume sections |
+| `1df2768` | Hover effects, card tilt, phone menu, active nav, social icons |
+| `dbdaa8f` | Redirects for 13 old URLs; sitemap now lists only the home page |
+| `d8944b2` | Fixes from browser screenshots: sidebar wrapping, phone spacing, PDF fallback |
+| `6777bde` | Fixes from final review: Contact nav highlight, menu fallback if `site.js` fails, papers back at their old `/files/` URLs |
 
 ## Files
 
@@ -88,7 +88,7 @@ The archive still holds an old CV PDF and an old resume PDF that contain contact
 
 **Browser checks:** `uv run tests/browser_check.py http://127.0.0.1:8000 <dir>` with Playwright's Chromium → **42/42 passed**. They cover no horizontal scroll and no console errors at 1280, 375, and 320px in light and dark mode; fonts loading; nav click scrolling and active highlight, including the last section; card tilt, icon tilt, and link sweep; reduced motion stopping movement; the phone menu opening, closing, and staying visible without JavaScript or when `site.js` fails to load; three old URLs landing on the right sections; all five DOIs resolving; all papers and the resume being served.
 
-Screenshots were reviewed by eye. They caught three issues the automated checks missed (sidebar phrase breaking mid-item, phone menu touching the icons, a blank PDF viewer), all fixed in `0ed756f`.
+Screenshots were reviewed by eye. They caught three issues the automated checks missed (sidebar phrase breaking mid-item, phone menu touching the icons, a blank PDF viewer), all fixed in `d8944b2`.
 
 **Not verified:**
 - Inline PDF rendering in a real desktop browser. Headless Chromium has no PDF viewer, so only the fallback was seen.
@@ -103,7 +103,7 @@ A fresh reviewer (most capable model) read the whole branch against the spec and
 
 **Critical:** none.
 
-**Important, all fixed in `ab62449` with tests that failed first:**
+**Important, all fixed in `6777bde` with tests that failed first:**
 1. Contact never highlighted in the nav, because the short last section couldn't reach the highlight band.
 2. If `site.js` failed to load, phones got a Menu button that did nothing. The script tag now restores the open menu on load failure.
 3. Old paper PDF URLs (`/files/*.pdf`) returned 404. The papers now live at those URLs again; the old CV PDF was not republished.
@@ -138,7 +138,7 @@ A fresh reviewer (most capable model) read the whole branch against the spec and
 ## Open items
 
 - **Deploy:** merge `revamp` into `master` and push, then rerun the checks on the live site. Needs Zidong's go-ahead.
-- **Git history:** decide whether to purge the file removed in `365b17e` from history. That needs a history rewrite and force-push.
+- **Git history:** decide whether to purge the file removed in `d39c664` from history. That needs a history rewrite and force-push.
 - **Later list (from SPEC.md):** page motion (sliding nav highlight, fade-up sections), the real portfolio URL in place of "Coming soon", personal projects, and moving to Astro only if projects grow into many pages.
 - **Next session (2026-10-21):** rework all copy substantially, and do a full mobile pass (real iOS Safari and Android, plus Safari rendering of the speck texture, are still untested).
 
